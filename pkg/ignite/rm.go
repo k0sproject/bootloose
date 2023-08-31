@@ -1,6 +1,6 @@
 package ignite
 
-import "github.com/weaveworks/footloose/pkg/exec"
+import "github.com/k0sproject/footloose/pkg/exec"
 
 // Remove removes an Ignite VM
 func Remove(name string) error {

@@ -19,7 +19,7 @@ package docker
 import (
 	"io"
 
-	"github.com/weaveworks/footloose/pkg/exec"
+	"github.com/k0sproject/footloose/pkg/exec"
 )
 
 // containerCmder implements exec.Cmder for docker containers

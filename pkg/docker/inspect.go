@@ -21,7 +21,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/weaveworks/footloose/pkg/exec"
+	"github.com/k0sproject/footloose/pkg/exec"
 )
 
 // Inspect return low-level information on containers

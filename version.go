@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	release "github.com/weaveworks/footloose/pkg/version"
+	release "github.com/k0sproject/footloose/pkg/version"
 
 	"github.com/spf13/cobra"
 )
@@ -28,7 +28,7 @@ func showVersion(cmd *cobra.Command, args []string) {
 	}
 	release, err := release.FindLastRelease()
 	if err != nil {
-		fmt.Println("version: failed to check for new versions. You may want to check yourself at https://github.com/weaveworks/footloose/releases.")
+		fmt.Println("version: failed to check for new versions. You may want to check yourself at https://github.com/k0sproject/footloose/releases.")
 		return
 	}
 	if strings.Compare(version, *release.TagName) != 0 {

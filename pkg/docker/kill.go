@@ -17,7 +17,7 @@ limitations under the License.
 package docker
 
 import (
-	"github.com/weaveworks/footloose/pkg/exec"
+	"github.com/k0sproject/footloose/pkg/exec"
 )
 
 // Kill sends the named signal to the container

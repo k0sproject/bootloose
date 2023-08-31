@@ -26,14 +26,3 @@ changelog:
     exclude:
     - '^docs:'
     - '^test:'
-brews:
-  -
-    tap:
-      owner: weaveworks
-      name: homebrew-tap
-    commit_author:
-      name: weaveworksbot
-      email: team+gitbot@weave.works
-    folder: Formula
-    homepage: https://github.com/weaveworks/footloose
-    description: Containers that look like Virtual Machines

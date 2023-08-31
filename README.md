@@ -1,10 +1,5 @@
-# Deprecated
-
-This repository is no longer maintained. For a more up-to-date way to manage microVMs, please take a look at [Flintlock](https://github.com/weaveworks-liquidmetal/flintlock).
-
-[![Build Status](https://travis-ci.org/weaveworks/footloose.svg?branch=master)](https://travis-ci.org/weaveworks/footloose)
-[![Go Report Card](https://goreportcard.com/badge/github.com/weaveworks/footloose)](https://goreportcard.com/report/github.com/weaveworks/footloose)
-[![GoDoc](https://godoc.org/github.com/weaveworks/footloose?status.svg)](https://godoc.org/github.com/weaveworks/footloose)
+[![Go Report Card](https://goreportcard.com/badge/github.com/k0sproject/footloose)](https://goreportcard.com/report/github.com/k0sproject/footloose)
+[![GoDoc](https://godoc.org/github.com/k0sproject/footloose?status.svg)](https://godoc.org/github.com/k0sproject/footloose)
 
 # footloose
 
@@ -25,42 +20,16 @@ about it is: [Vagrant](https://www.vagrantup.com/), but with containers.
 
 ## Install
 
-`footloose` binaries can be downloaded from the [release page][gh-release]:
-
-### Linux
-
-```console
-curl -Lo footloose https://github.com/weaveworks/footloose/releases/download/0.6.3/footloose-0.6.3-linux-x86_64
-chmod +x footloose
-sudo mv footloose /usr/local/bin/
-```
-
-### macOS
-
-On macOS we provide a direct download and a homebrew tap:
-
-```console
-curl --silent --location https://github.com/weaveworks/footloose/releases/download/0.6.3/footloose-0.6.3-darwin-x86_64.tar.gz | tar xz
-sudo mv footloose /usr/local/bin
-```
-
-or
-
-```console
-brew tap weaveworks/tap
-brew install weaveworks/tap/footloose
-```
-
 ### From source
 
-Alternatively, build and install `footloose` from source. It requires having
+Build and install `footloose` from source. It requires having
 `go >= 1.11` installed:
 
 ```console
-GO111MODULE=on go get github.com/weaveworks/footloose
+go get github.com/k0sproject/footloose
 ```
 
-[gh-release]: https://github.com/weaveworks/footloose/releases
+[gh-release]: https://github.com/k0sproject/footloose/releases
 
 ## Usage
 
@@ -155,34 +124,11 @@ machines:
     - containerPort: 22
 ```
 
-If you want to use [Ignite](https://github.com/weaveworks/ignite) as the backend in order
-to run real VMs, change to `backend: ignite`.
-
-```yaml
-cluster:
-  name: cluster
-  privateKey: cluster-key
-machines:
-- count: 3
-  backend: ignite
-  spec:
-    image: weaveworks/ignite-centos:7
-    name: node%d
-    portMappings:
-    - containerPort: 22
-  # All Ignite options shown below here are optional and can be omitted.
-  # These are the defaults:
-  ignite:
-    cpus: 2
-    memory: 1GB
-    diskSize: 4GB
-    kernel: weaveworks/ignite-ubuntu:4.19.47
-```
 
 This configuration can naturally be edited by hand. The full list of
 available parameters are in [the reference documentation][pkg-config].
 
-[pkg-config]: https://godoc.org/github.com/weaveworks/footloose/pkg/config
+[pkg-config]: https://godoc.org/github.com/k0sproject/footloose/pkg/config
 
 ## Examples
 
@@ -252,10 +198,6 @@ Failed to install release agent, ignoring: File exists
 [  OK  ] Reached target Multi-User System.
 ```
 
-### Run real VMs with Ignite
-
-[![asciicast](https://asciinema.org/a/HRrgSAjhc0gFGOCnjuqKDwIoN.svg)](https://asciinema.org/a/HRrgSAjhc0gFGOCnjuqKDwIoN)
-
 ## FAQ
 
 ### Is `footloose` just like LXD?
@@ -269,12 +211,12 @@ We are a very friendly community and love questions, help and feedback.
 If you have any questions, feedback, or problems with `footloose`:
 
 - Check out the [examples](examples).
-- Join the discussion
-  - Invite yourself to the <a href="https://slack.weave.works/" target="_blank">Weave community</a> Slack.
-  - Ask a question on the [#footloose](https://weave-community.slack.com/messages/footloose/) Slack channel.
-  - Join the [Weave User Group](https://www.meetup.com/pro/Weave/) and get invited to online talks, hands-on training and meetups in your area.
-- [File an issue](https://github.com/weaveworks/footloose/issues/new).
+- [File an issue](https://github.com/k0sproject/footloose/issues/new).
 
-Weaveworks follows the [CNCF Code of Conduct](https://github.com/cncf/foundation/blob/master/code-of-conduct.md). Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting a Weaveworks project maintainer, or Alexis Richardson (alexis@weave.works).
+footloose follows the [CNCF Code of
+Conduct](https://github.com/cncf/foundation/blob/master/code-of-conduct.md).
+Instances of abusive, harassing, or otherwise unacceptable behavior may be
+reported by contacting a footloose project maintainer, or Natanael Copa
+<ncopa@mirantis.com>
 
 Your feedback is always welcome!

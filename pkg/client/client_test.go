@@ -6,9 +6,9 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/weaveworks/footloose/pkg/api"
-	"github.com/weaveworks/footloose/pkg/cluster"
-	"github.com/weaveworks/footloose/pkg/config"
+	"github.com/k0sproject/footloose/pkg/api"
+	"github.com/k0sproject/footloose/pkg/cluster"
+	"github.com/k0sproject/footloose/pkg/config"
 )
 
 type env struct {

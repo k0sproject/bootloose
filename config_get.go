@@ -7,7 +7,7 @@ import (
 	"reflect"
 
 	"github.com/spf13/cobra"
-	"github.com/weaveworks/footloose/pkg/config"
+	"github.com/k0sproject/footloose/pkg/config"
 )
 
 var getConfigCmd = &cobra.Command{
