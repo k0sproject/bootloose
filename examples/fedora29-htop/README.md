@@ -1,7 +1,7 @@
 # Customize the OS image
 
 It is possible to create docker images that specialize a [`footloose` base
-image](https://github.com/weaveworks/footloose#choosing-the-os-image-to-run) to
+image](https://github.com/k0sproject/footloose#choosing-the-os-image-to-run) to
 suit your needs.
 
 For instance, if we want the created machines to run `fedora29` with the

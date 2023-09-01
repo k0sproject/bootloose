@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	"github.com/weaveworks/footloose/pkg/cluster"
+	"github.com/k0sproject/footloose/pkg/cluster"
 )
 
 var showCmd = &cobra.Command{

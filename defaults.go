@@ -1,6 +1,6 @@
 package main
 
-import "github.com/weaveworks/footloose/pkg/config"
+import "github.com/k0sproject/footloose/pkg/config"
 
 // imageTag computes the docker image tag given the footloose version.
 func imageTag(v string) string {

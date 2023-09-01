@@ -5,8 +5,8 @@ import (
 	"net"
 	"path/filepath"
 
-	"github.com/weaveworks/footloose/pkg/config"
-	"github.com/weaveworks/footloose/pkg/exec"
+	"github.com/k0sproject/footloose/pkg/config"
+	"github.com/k0sproject/footloose/pkg/exec"
 )
 
 const (

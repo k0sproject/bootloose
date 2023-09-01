@@ -9,10 +9,10 @@ import (
 	"github.com/docker/docker/api/types/network"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
-	"github.com/weaveworks/footloose/pkg/config"
-	"github.com/weaveworks/footloose/pkg/docker"
-	"github.com/weaveworks/footloose/pkg/exec"
-	"github.com/weaveworks/footloose/pkg/ignite"
+	"github.com/k0sproject/footloose/pkg/config"
+	"github.com/k0sproject/footloose/pkg/docker"
+	"github.com/k0sproject/footloose/pkg/exec"
+	"github.com/k0sproject/footloose/pkg/ignite"
 )
 
 // Machine is a single machine.
