@@ -286,8 +286,8 @@ func (c *Cluster) CreateMachine(machine *Machine, i int) error {
 func (c *Cluster) createMachineRunArgs(machine *Machine, name string, i int) []string {
 	runArgs := []string{
 		"-it",
-		"--label", "works.weave.owner=footloose",
-		"--label", "works.weave.cluster=" + c.spec.Cluster.Name,
+		"--label", "io.k0sproject.footloose.owner=footloose",
+		"--label", "io.k0sproject.footloose.cluster=" + c.spec.Cluster.Name,
 		"--name", name,
 		"--hostname", machine.Hostname(),
 		"--tmpfs", "/run",
