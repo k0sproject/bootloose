@@ -17,6 +17,10 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+# Truncate machine ID files to trigger regeneration.
+RUN >/etc/machine-id
+RUN >/var/lib/dbus/machine-id
+
 EXPOSE 22
 
 RUN systemctl set-default multi-user.target
