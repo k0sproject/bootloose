@@ -1,7 +1,6 @@
 package cluster
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 
@@ -46,7 +45,7 @@ func (s *KeyStore) Store(name, key string) error {
 		return errors.Errorf("key store: store: key '%s' already exists", name)
 	}
 
-	if err := ioutil.WriteFile(s.keyPath(name), []byte(key), 0644); err != nil {
+	if err := os.WriteFile(s.keyPath(name), []byte(key), 0644); err != nil {
 		return errors.Wrap(err, "key store: write")
 	}
 
@@ -58,7 +57,7 @@ func (s *KeyStore) Get(name string) ([]byte, error) {
 	if !s.keyExists(name) {
 		return nil, errors.Errorf("key store: get: unknown key '%s'", name)
 	}
-	return ioutil.ReadFile(s.keyPath(name))
+	return os.ReadFile(s.keyPath(name))
 }
 
 // Remove removes a key from the store.

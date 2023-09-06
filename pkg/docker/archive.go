@@ -23,7 +23,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 
 	"github.com/pkg/errors"
@@ -57,7 +56,7 @@ func GetArchiveTags(path string) ([]string, error) {
 		}
 	}
 	// read and parse the tags
-	b, err := ioutil.ReadAll(tr)
+	b, err := io.ReadAll(tr)
 	if err != nil {
 		return nil, err
 	}

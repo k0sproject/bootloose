@@ -1,7 +1,7 @@
 package cluster
 
 import (
-	"io/ioutil"
+	"io"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -11,7 +11,7 @@ func TestMatchFilter(t *testing.T) {
 	const refused = "ssh: connect to host 172.17.0.2 port 22: Connection refused"
 
 	filter := matchFilter{
-		writer: ioutil.Discard,
+		writer: io.Discard,
 		regexp: connectRefused,
 	}
 
