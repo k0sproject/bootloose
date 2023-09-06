@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -266,14 +265,14 @@ func (t *test) run() (string, error) {
 
 func (t *test) goldenOutput() string {
 	// testname.golden.output takes precedence.
-	golden, err := ioutil.ReadFile(t.testname + ".golden.output")
+	golden, err := os.ReadFile(t.testname + ".golden.output")
 	if err == nil {
 		return string(golden)
 	}
 
 	// Expand a generic golden output.
 	baseFilename := t.file[:len(t.file)-len(".cmd")]
-	data, err := ioutil.ReadFile(baseFilename + ".golden.output")
+	data, err := os.ReadFile(baseFilename + ".golden.output")
 	if err != nil {
 		// not having any golden output isn't an error, it just means the test
 		// shouldn't output anything.
@@ -319,9 +318,9 @@ func runTest(t *testing.T, test *test) {
 
 	// 2. b) Compare file content.
 	for i := range goldenFiles {
-		golden, err := ioutil.ReadFile(goldenDir + goldenFiles[i])
+		golden, err := os.ReadFile(goldenDir + goldenFiles[i])
 		assert.NoError(t, err)
-		got, err := ioutil.ReadFile(gotDir + gotFiles[i])
+		got, err := os.ReadFile(gotDir + gotFiles[i])
 		assert.NoError(t, err)
 
 		assert.Equal(t, string(golden), string(got))
@@ -329,7 +328,7 @@ func runTest(t *testing.T, test *test) {
 }
 
 func loadVariables(t *testing.T) variables {
-	data, err := ioutil.ReadFile("variables.json")
+	data, err := os.ReadFile("variables.json")
 	if err != nil {
 		// it's allowed to not have any variable!
 		return nil
