@@ -13,13 +13,13 @@ import (
 	"github.com/docker/docker/api/types"
 	"github.com/ghodss/yaml"
 	"github.com/k0sproject/footloose/pkg/config"
-	"github.com/k0sprojecs/footloose/pkg/config"
 	"github.com/k0sproject/footloose/pkg/docker"
 	"github.com/k0sproject/footloose/pkg/exec"
 	"github.com/k0sproject/footloose/pkg/ignite"
 	"github.com/mitchellh/go-homedir"
 	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus
+	log "github.com/sirupsen/logrus"
+)
 
 // Container represents a running machine.
 type Container struct {
@@ -597,15 +597,11 @@ func (f *matchFilter) Write(p []byte) (n int, err error) {
 }
 
 // Matches:
-//
-//
-//	h_exchange_identification: read: Connection reset by peer
+// ssh_exchange_identification: read: Connection reset by peer
 var connectRefused = regexp.MustCompile("^ssh_exchange_identification: ")
 
 // Matches:
-//
-//	
-//	Warning:Permanently added '172.17.0.2' (ECDSA) to the list of known hosts
+// Warning:Permanently added '172.17.0.2' (ECDSA) to the list of known hosts
 var knownHosts = regexp.MustCompile("^Warning: Permanently added .* to the list of known hosts.")
 
 // ssh returns true if the command should be tried again.
