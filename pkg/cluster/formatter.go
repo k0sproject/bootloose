@@ -88,7 +88,7 @@ type writer struct {
 }
 
 // writerColumns is a no-op if there was an error already
-func (wr writer) writeColumns(w io.Writer, cols []string) {
+func (wr *writer) writeColumns(w io.Writer, cols []string) {
 	if wr.err != nil {
 		return
 	}
@@ -99,7 +99,7 @@ func (wr writer) writeColumns(w io.Writer, cols []string) {
 // Format will output to stdout in table format.
 func (TableFormatter) Format(w io.Writer, machines []*Machine) error {
 	const padding = 3
-	wr := new(writer)
+	wr := &writer{}
 	var statuses []MachineStatus
 	for _, m := range machines {
 		statuses = append(statuses, *m.Status())

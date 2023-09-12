@@ -17,8 +17,6 @@ limitations under the License.
 package docker
 
 import (
-	"fmt"
-
 	"github.com/k0sproject/footloose/pkg/exec"
 )
 
@@ -26,7 +24,7 @@ import (
 func Info(format string) ([]string, error) {
 	cmd := exec.Command("docker", "info",
 		"-f", // format
-		fmt.Sprintf("%s", format),
+		format,
 	)
 	return exec.CombinedOutputLines(cmd)
 }
