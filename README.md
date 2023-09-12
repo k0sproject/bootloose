@@ -26,7 +26,7 @@ Build and install `footloose` from source. It requires having
 `go >= 1.11` installed:
 
 ```console
-go get github.com/k0sproject/footloose
+go install github.com/k0sproject/footloose/...@latest
 ```
 
 [gh-release]: https://github.com/k0sproject/footloose/releases
