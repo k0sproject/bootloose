@@ -43,6 +43,12 @@ go test -v -run TestEndToEnd/test-create-delete
 This will match `test-create-delete-centos7`, `test-create-delete-fedora29`,
 ...
 
+To run tests for a specific image:
+
+```console
+go test -v -args -image=image_name ./tests
+```
+
 ## Writing tests
 
 `footloose` has a small framework to write end to end tests. The main idea is

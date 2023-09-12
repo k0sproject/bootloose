@@ -3,6 +3,7 @@ package tests
 import (
 	"bufio"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"os"
 	"os/exec"
@@ -365,8 +366,14 @@ func listTests(t *testing.T, vars variables) []test {
 	return expanded
 }
 
+var singleImage = flag.String("image", "", "Docker image to use for testing (default: use all from variables.json)")
+
 func TestEndToEnd(t *testing.T) {
 	vars := loadVariables(t)
+	if *singleImage != "" {
+		vars["image"] = []string{*singleImage}
+	}
+
 	tests := listTests(t, vars)
 
 	for _, test := range tests {

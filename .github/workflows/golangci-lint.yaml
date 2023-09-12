@@ -1,11 +1,17 @@
 name: Go lint
 on:
   push:
+    branches:
+      - main
+      - release-*
     paths:
       - '**.go'
       - 'go.mod'
       - 'go.sum'
   pull_request:
+    branches:
+      - main
+      - release-*
     paths:
       - '**.go'
       - 'go.mod'

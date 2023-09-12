@@ -17,7 +17,9 @@ limitations under the License.
 package docker
 
 import (
+	"bytes"
 	"regexp"
+	"strings"
 
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
@@ -36,21 +38,27 @@ func Run(image string, runArgs []string, containerArgs []string) (id string, err
 	args = append(args, image)
 	args = append(args, containerArgs...)
 	cmd := exec.Command("docker", args...)
-	output, err := exec.CombinedOutputLines(cmd)
+	var stdout, stderr bytes.Buffer
+	cmd.SetStdout(&stdout)
+	cmd.SetStderr(&stderr)
+
+	err = cmd.Run()
 	if err != nil {
 		// log error output if there was any
-		for _, line := range output {
-			log.Error(line)
-		}
+		log.Error(stderr.String())
 		return "", err
 	}
+
 	// if docker created a container the id will be the first line and match
 	// validate the output and get the id
-	if len(output) < 1 {
+	outputStr := stdout.String()
+	outputLines := strings.Split(outputStr, "\n")
+
+	if len(outputLines) < 1 {
 		return "", errors.New("failed to get container id, received no output from docker run")
 	}
-	if !containerIDRegex.MatchString(output[0]) {
-		return "", errors.Errorf("failed to get container id, output did not match: %v", output)
+	if !containerIDRegex.MatchString(outputLines[0]) {
+		return "", errors.Errorf("failed to get container id, output did not match: %v", outputLines)
 	}
-	return output[0], nil
+	return outputLines[0], nil
 }
