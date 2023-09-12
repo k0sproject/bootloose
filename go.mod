@@ -13,6 +13,7 @@ require (
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.7.0
 	github.com/stretchr/testify v1.7.0
+	golang.org/x/text v0.3.3
 	gopkg.in/yaml.v2 v2.4.0
 )
 

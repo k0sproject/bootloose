@@ -5,6 +5,9 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 func pathSplit(r rune) bool {
@@ -15,18 +18,19 @@ func pathSplit(r rune) bool {
 func GetValueFromConfig(stringPath string, object interface{}) (interface{}, error) {
 	keyPath := strings.FieldsFunc(stringPath, pathSplit)
 	v := reflect.ValueOf(object)
+	caser := cases.Title(language.English)
 	for _, key := range keyPath {
-		keyUpper := strings.Title(key)
+		keyTitle := caser.String(key)
 		for v.Kind() == reflect.Ptr {
 			v = v.Elem()
 		}
 		if v.Kind() == reflect.Struct {
-			v = v.FieldByName(keyUpper)
+			v = v.FieldByName(keyTitle)
 			if !v.IsValid() {
-				return nil, fmt.Errorf("%v key does not exist", keyUpper)
+				return nil, fmt.Errorf("%v key does not exist", keyTitle)
 			}
 		} else if v.Kind() == reflect.Slice {
-			index, errConv := strconv.Atoi(keyUpper)
+			index, errConv := strconv.Atoi(keyTitle)
 			if errConv != nil {
 				return nil, fmt.Errorf("%v is not an index", key)
 			}
