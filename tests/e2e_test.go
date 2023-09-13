@@ -193,11 +193,17 @@ type cmd struct {
 	captureOutput bool
 }
 
+func (t *test) image() string {
+	parts := strings.Split(t.testname, "-")
+	return parts[len(parts)-1]
+}
+
 func (t *test) expandVars(s string) string {
 	replacements := copyArray(t.vars)
 	replacements = append(replacements,
 		"%testOutputDir", t.outputDir(),
 		"%testName", t.name(),
+		"%image", t.image(),
 	)
 	replacer := strings.NewReplacer(replacements...)
 	return replacer.Replace(s)
