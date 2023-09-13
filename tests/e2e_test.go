@@ -355,6 +355,20 @@ func listTests(t *testing.T, vars variables) []test {
 		for _, item := range items {
 			ext := filepath.Ext(item.expanded)
 			testname := item.expanded[:len(item.expanded)-len(ext)]
+
+			var shouldRun bool
+
+			for _, img := range vars["image"] {
+				if strings.Contains(testname, img) {
+					shouldRun = true
+					break
+				}
+			}
+
+			if !shouldRun {
+				continue
+			}
+
 			expanded = append(expanded, test{
 				testname: testname,
 				file:     f,
