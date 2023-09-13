@@ -59,7 +59,7 @@ to write a `.cmd` file with a list of commands to run and compare the output
 
 ```shell
 # Test footloose ssh can execute a remote command
-footloose config create --override --config %testName.footloose --name %testName --key %testName-key --image quay.io/footloose/%image
+footloose config create --override --config %testName.footloose --name %testName --key %testName-key --image %image
 footloose create --config %testName.footloose
 %out footloose --config %testName.footloose ssh root@node0 hostname
 footloose delete --config %testName.footloose

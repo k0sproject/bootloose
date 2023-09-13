@@ -1,6 +1,6 @@
 {
   "name": "node%d",
-  "image": "quay.io/footloose/%image",
+  "image": "%image",
   "networks": [
     "net1",
     "net2"

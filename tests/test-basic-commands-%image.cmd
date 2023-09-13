@@ -1,5 +1,5 @@
 # Test that common utilities are present in the base images
-footloose config create --config %testName.footloose --override --name %testName --key %testName-key --image quay.io/footloose/%image
+footloose config create --config %testName.footloose --override --name %testName --key %testName-key --image %image
 footloose create --config %testName.footloose
 footloose --config %testName.footloose ssh root@node0 hostname
 footloose --config %testName.footloose ssh root@node0 ps

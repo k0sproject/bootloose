@@ -2,14 +2,6 @@ package main
 
 import "github.com/k0sproject/footloose/pkg/config"
 
-// imageTag computes the docker image tag given the footloose version.
-func imageTag(v string) string {
-	if v == "git" {
-		return "latest"
-	}
-	return v
-}
-
 // defaultKeyStore is the path where to store the public keys.
 const defaultKeyStorePath = "keys"
 
@@ -22,7 +14,7 @@ var defaultConfig = config.Config{
 		Count: 1,
 		Spec: config.Machine{
 			Name:  "node%d",
-			Image: "quay.io/footloose/centos7:" + imageTag(version),
+			Image: "centos7", // TODO use a k0sproject hosted image
 			PortMappings: []config.PortMapping{{
 				ContainerPort: 22,
 			}},

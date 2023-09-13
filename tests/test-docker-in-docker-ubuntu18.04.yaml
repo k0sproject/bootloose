@@ -7,7 +7,7 @@ machines:
     volumes:
     - type: volume
       destination: /var/lib/docker
-    image: quay.io/footloose/ubuntu18.04
+    image: ubuntu18.04
     name: node%d
     portMappings:
     - containerPort: 22

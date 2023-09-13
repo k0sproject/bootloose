@@ -32,7 +32,7 @@ func TestNewClusterWithHostPort(t *testing.T) {
 machines:
 - count: 2
   spec:
-    image: quay.io/footloose/centos7
+    image: centos7
     name: node%d
     portMappings:
     - containerPort: 22
