@@ -13,6 +13,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 type variables map[string][]string
@@ -300,9 +301,9 @@ func runTest(t *testing.T, test *test) {
 		assert.True(t, ok, err.Error())
 	} else {
 		if err != nil {
-			fmt.Print(string(output))
+			t.Logf("output: %s", output)
 		}
-		assert.NoError(t, err)
+		require.NoError(t, err)
 	}
 
 	// 1. Compare stdout/err.
@@ -320,9 +321,9 @@ func runTest(t *testing.T, test *test) {
 	// 2. b) Compare file content.
 	for i := range goldenFiles {
 		golden, err := os.ReadFile(goldenDir + goldenFiles[i])
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		got, err := os.ReadFile(gotDir + gotFiles[i])
-		assert.NoError(t, err)
+		require.NoError(t, err)
 
 		assert.Equal(t, string(golden), string(got))
 	}
@@ -345,7 +346,7 @@ func loadVariables(t *testing.T) variables {
 
 func listTests(t *testing.T, vars variables) []test {
 	files, err := filepath.Glob("test-*.cmd")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	// expand variables in file names.
 	expanded := []test{}
