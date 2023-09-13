@@ -599,7 +599,7 @@ func (f *matchFilter) Write(p []byte) (n int, err error) {
 
 // Matches:
 // ssh_exchange_identification: read: Connection reset by peer
-var connectRefused = regexp.MustCompile("^ssh_exchange_identification: ")
+var connectRefused = regexp.MustCompile("^(ssh|kex)_exchange_identification: ")
 
 // Matches:
 // Warning:Permanently added '172.17.0.2' (ECDSA) to the list of known hosts
