@@ -4,7 +4,7 @@ cluster:
 machines:
 - count: 3
   spec:
-    image: centos7
+    image: fedora29
     name: node
     portMappings:
     - containerPort: 22
