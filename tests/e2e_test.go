@@ -251,8 +251,8 @@ func (t *test) run() (string, error) {
 			output, err := cmd.CombinedOutput()
 			if err != nil {
 				// Display the captured output in case of failure.
-				fmt.Print(string(output))
-				return "", err
+				print(string(output))
+				return "", fmt.Errorf("failed to run command cmd=%s args=%v error:%w", testCmd.name, testCmd.args, err)
 			}
 			capturedOutput.Write(output)
 		} else {
