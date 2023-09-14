@@ -273,7 +273,7 @@ func (t *test) goldenOutput() string {
 	// testname.golden.output takes precedence.
 	golden, err := os.ReadFile(t.testname + ".golden.output")
 	if err == nil {
-		return string(golden)
+		return t.expandVars(string(golden))
 	}
 
 	// Expand a generic golden output.
