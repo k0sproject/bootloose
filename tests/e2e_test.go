@@ -191,6 +191,7 @@ type cmd struct {
 	// should we capture the command output to be tested against the golden
 	// output?
 	captureOutput bool
+	doDefer       bool
 }
 
 func (t *test) image() string {
@@ -222,6 +223,9 @@ func (t *test) parseCmd(line string) cmd {
 	case "%out":
 		cmd.captureOutput = true
 		parts = parts[1:]
+	case "%defer":
+		cmd.doDefer = true
+		parts = parts[1:]
 	}
 
 	cmd.name = parts[0]
@@ -247,6 +251,14 @@ func (t *test) run() (string, error) {
 		}
 		testCmd := t.parseCmd(line)
 		cmd := exec.Command(testCmd.name, testCmd.args...)
+		if testCmd.doDefer {
+			defer func() {
+				if err := cmd.Run(); err != nil {
+					println("info: deferred command failed:", err.Error())
+				}
+			}()
+			continue
+		}
 		if testCmd.captureOutput {
 			output, err := cmd.CombinedOutput()
 			if err != nil {
