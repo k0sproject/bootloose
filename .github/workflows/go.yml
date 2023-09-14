@@ -82,6 +82,9 @@ jobs:
     - name: Run go install
       run: go install
 
+    - name: Remove any leftover footloose machines
+      run: docker ps -a --filter "label=io.k0sproject.footloose.owner=footloose" --format "{{.ID}}" | xargs -r docker rm
+
     # TODO i think main and pkg can be run outside of the matrix
     - name: Run tests (main)
       run: go test -timeout 5m -v .
