@@ -677,8 +677,7 @@ func (c *Cluster) SSH(nodename string, username string, remoteArgs ...string) er
 	// If we ssh in a bit too quickly after the container creation, ssh errors out
 	// with:
 	//   ssh_exchange_identification: read: Connection reset by peer
-	// Let's loop a few times if we receive this message.
-	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 	ticker := time.NewTicker(200 * time.Millisecond)
 	defer ticker.Stop()
