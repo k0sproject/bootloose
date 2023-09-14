@@ -3,6 +3,7 @@ package tests
 import (
 	"bufio"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"os"
 	"os/exec"
@@ -12,6 +13,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 type variables map[string][]string
@@ -167,16 +169,21 @@ func exists(filename string) bool {
 	return err == nil
 }
 
+func (t *test) basefile() string {
+	ext := filepath.Ext(t.file)
+	return t.file[:len(t.file)-len(ext)]
+}
+
 func (t *test) shouldErrorOut() bool {
-	return exists(t.testname + ".error")
+	return exists(t.basefile() + ".error")
 }
 
 func (t *test) shouldSkip() bool {
-	return exists(t.testname + ".skip")
+	return exists(t.basefile() + ".skip")
 }
 
 func (t *test) isLong() bool {
-	return exists(t.testname + ".long")
+	return exists(t.basefile() + ".long")
 }
 
 func (t *test) outputDir() string {
@@ -189,6 +196,12 @@ type cmd struct {
 	// should we capture the command output to be tested against the golden
 	// output?
 	captureOutput bool
+	doDefer       bool
+}
+
+func (t *test) image() string {
+	parts := strings.Split(t.testname, "-")
+	return parts[len(parts)-1]
 }
 
 func (t *test) expandVars(s string) string {
@@ -196,6 +209,7 @@ func (t *test) expandVars(s string) string {
 	replacements = append(replacements,
 		"%testOutputDir", t.outputDir(),
 		"%testName", t.name(),
+		"%image", t.image(),
 	)
 	replacer := strings.NewReplacer(replacements...)
 	return replacer.Replace(s)
@@ -213,6 +227,9 @@ func (t *test) parseCmd(line string) cmd {
 	switch parts[0] {
 	case "%out":
 		cmd.captureOutput = true
+		parts = parts[1:]
+	case "%defer":
+		cmd.doDefer = true
 		parts = parts[1:]
 	}
 
@@ -239,12 +256,14 @@ func (t *test) run() (string, error) {
 		}
 		testCmd := t.parseCmd(line)
 		cmd := exec.Command(testCmd.name, testCmd.args...)
+		if testCmd.doDefer {
+			defer func() { _ = cmd.Run() }()
+			continue
+		}
 		if testCmd.captureOutput {
 			output, err := cmd.CombinedOutput()
 			if err != nil {
-				// Display the captured output in case of failure.
-				fmt.Print(string(output))
-				return "", err
+				return "", fmt.Errorf("failed to run command cmd=%s args=%v error:%w output: %s", testCmd.name, testCmd.args, err, string(output))
 			}
 			capturedOutput.Write(output)
 		} else {
@@ -267,7 +286,7 @@ func (t *test) goldenOutput() string {
 	// testname.golden.output takes precedence.
 	golden, err := os.ReadFile(t.testname + ".golden.output")
 	if err == nil {
-		return string(golden)
+		return strings.TrimSpace(t.expandVars(string(golden)))
 	}
 
 	// Expand a generic golden output.
@@ -279,7 +298,7 @@ func (t *test) goldenOutput() string {
 		return ""
 	}
 
-	return t.expandVars(string(data))
+	return strings.TrimSpace(t.expandVars(string(data)))
 }
 
 func runTest(t *testing.T, test *test) {
@@ -299,13 +318,13 @@ func runTest(t *testing.T, test *test) {
 		assert.True(t, ok, err.Error())
 	} else {
 		if err != nil {
-			fmt.Print(string(output))
+			t.Logf("output: %s", output)
 		}
-		assert.NoError(t, err)
+		require.NoError(t, err)
 	}
 
 	// 1. Compare stdout/err.
-	assert.Equal(t, test.goldenOutput(), string(output))
+	assert.Equal(t, test.goldenOutput(), strings.TrimSpace(string(output)))
 
 	// 2. Compare produced files.
 	goldenFiles, _ := find(goldenDir)
@@ -319,9 +338,9 @@ func runTest(t *testing.T, test *test) {
 	// 2. b) Compare file content.
 	for i := range goldenFiles {
 		golden, err := os.ReadFile(goldenDir + goldenFiles[i])
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		got, err := os.ReadFile(gotDir + gotFiles[i])
-		assert.NoError(t, err)
+		require.NoError(t, err)
 
 		assert.Equal(t, string(golden), string(got))
 	}
@@ -344,7 +363,7 @@ func loadVariables(t *testing.T) variables {
 
 func listTests(t *testing.T, vars variables) []test {
 	files, err := filepath.Glob("test-*.cmd")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	// expand variables in file names.
 	expanded := []test{}
@@ -353,6 +372,20 @@ func listTests(t *testing.T, vars variables) []test {
 		for _, item := range items {
 			ext := filepath.Ext(item.expanded)
 			testname := item.expanded[:len(item.expanded)-len(ext)]
+
+			var shouldRun bool
+
+			for _, img := range vars["image"] {
+				if strings.Contains(testname, img) {
+					shouldRun = true
+					break
+				}
+			}
+
+			if !shouldRun {
+				continue
+			}
+
 			expanded = append(expanded, test{
 				testname: testname,
 				file:     f,
@@ -365,8 +398,14 @@ func listTests(t *testing.T, vars variables) []test {
 	return expanded
 }
 
+var singleImage = flag.String("image", "", "Docker image to use for testing (default: use all from variables.json)")
+
 func TestEndToEnd(t *testing.T) {
 	vars := loadVariables(t)
+	if *singleImage != "" {
+		vars["image"] = []string{*singleImage}
+	}
+
 	tests := listTests(t, vars)
 
 	for _, test := range tests {

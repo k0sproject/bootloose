@@ -1,0 +1,10 @@
+cluster:
+  name: test-create-invalid-%image
+  privateKey: test-create-invalid-%image-key
+machines:
+- count: 3
+  spec:
+    image: %image
+    name: node
+    portMappings:
+    - containerPort: 22

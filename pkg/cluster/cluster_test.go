@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestMatchFilter(t *testing.T) {
@@ -16,11 +17,11 @@ func TestMatchFilter(t *testing.T) {
 	}
 
 	_, err := filter.Write([]byte("foo\n"))
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, false, filter.matched)
 
 	_, err = filter.Write([]byte(refused))
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, false, filter.matched)
 }
 
@@ -31,14 +32,14 @@ func TestNewClusterWithHostPort(t *testing.T) {
 machines:
 - count: 2
   spec:
-    image: quay.io/footloose/centos7
+    image: centos7
     name: node%d
     portMappings:
     - containerPort: 22
       hostPort: 2222
 `))
-	assert.NoError(t, err)
-	assert.NotNil(t, cluster)
+	require.NoError(t, err)
+	require.NotNil(t, cluster)
 	assert.Equal(t, 1, len(cluster.spec.Machines))
 	template := cluster.spec.Machines[0]
 	assert.Equal(t, 2, template.Count)

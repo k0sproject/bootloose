@@ -19,11 +19,13 @@ var sshCmd = &cobra.Command{
 }
 
 var sshOptions struct {
-	config string
+	config  string
+	verbose bool
 }
 
 func init() {
 	sshCmd.Flags().StringVarP(&sshOptions.config, "config", "c", Footloose, "Cluster configuration file")
+	sshCmd.Flags().BoolVarP(&sshOptions.verbose, "verbose", "v", false, "SSH verbose output")
 	footloose.AddCommand(sshCmd)
 }
 
@@ -49,7 +51,12 @@ func ssh(cmd *cobra.Command, args []string) error {
 		}
 		username = user.Username
 	}
-	return cluster.SSH(node, username, args[1:]...)
+	var remoteArgs []string
+	if sshOptions.verbose {
+		remoteArgs = append(remoteArgs, "-v")
+	}
+	remoteArgs = append(remoteArgs, args[1:]...)
+	return cluster.SSH(node, username, remoteArgs...)
 }
 
 func validateArgs(cmd *cobra.Command, args []string) error {

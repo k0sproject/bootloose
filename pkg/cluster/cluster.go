@@ -1,6 +1,7 @@
 package cluster
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"os"
@@ -180,7 +181,8 @@ const initScript = `
 set -e
 rm -f /run/nologin
 sshdir=/root/.ssh
-mkdir $sshdir; chmod 700 $sshdir
+test -d "$sshdir" || mkdir $sshdir
+chmod 700 $sshdir
 touch $sshdir/authorized_keys; chmod 600 $sshdir/authorized_keys
 `
 
@@ -586,23 +588,19 @@ type matchFilter struct {
 }
 
 func (f *matchFilter) Write(p []byte) (n int, err error) {
-	// Assume the relevant log line is flushed in one write.
-	if match := f.regexp.Match(p); match {
+	if f.regexp.Match(p) {
 		f.matched = true
 		if !f.writeMatched {
-			return len(p), nil
+			return len(p), err
 		}
 	}
+	// Write as is if no match
 	return f.writer.Write(p)
 }
 
 // Matches:
 // ssh_exchange_identification: read: Connection reset by peer
-var connectRefused = regexp.MustCompile("^ssh_exchange_identification: ")
-
-// Matches:
-// Warning:Permanently added '172.17.0.2' (ECDSA) to the list of known hosts
-var knownHosts = regexp.MustCompile("^Warning: Permanently added .* to the list of known hosts.")
+var connectRefused = regexp.MustCompile("(?m)(ssh|kex)_exchange_identification:.+?$")
 
 // ssh returns true if the command should be tried again.
 func ssh(args []string) (bool, error) {
@@ -614,15 +612,9 @@ func ssh(args []string) (bool, error) {
 		regexp:       connectRefused,
 	}
 
-	errFilter := &matchFilter{
-		writer:       refusedFilter,
-		writeMatched: false,
-		regexp:       knownHosts,
-	}
-
 	cmd.SetStdin(os.Stdin)
 	cmd.SetStdout(os.Stdout)
-	cmd.SetStderr(errFilter)
+	cmd.SetStderr(refusedFilter)
 
 	err := cmd.Run()
 	if err != nil && refusedFilter.matched {
@@ -675,6 +667,7 @@ func (c *Cluster) SSH(nodename string, username string, remoteArgs ...string) er
 		"-o", "UserKnownHostsFile=/dev/null",
 		"-o", "StrictHostKeyChecking=no",
 		"-o", "IdentitiesOnly=yes",
+		"-o", "LogLevel=error",
 		"-i", path,
 		"-p", f("%d", hostPort),
 		"-l", username,
@@ -684,17 +677,28 @@ func (c *Cluster) SSH(nodename string, username string, remoteArgs ...string) er
 	// If we ssh in a bit too quickly after the container creation, ssh errors out
 	// with:
 	//   ssh_exchange_identification: read: Connection reset by peer
-	// Let's loop a few times if we receive this message.
-	retries := 25
-	var retry bool
-	for retries > 0 {
-		retry, err = ssh(args)
-		if !retry {
-			break
-		}
-		retries--
-		time.Sleep(200 * time.Millisecond)
-	}
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	defer cancel()
+	ticker := time.NewTicker(200 * time.Millisecond)
+	defer ticker.Stop()
 
-	return err
+	var lastErr error
+	for {
+		select {
+		case <-ctx.Done():
+			if lastErr == nil {
+				return fmt.Errorf("ssh connection failed: %w", ctx.Err())
+			}
+			return fmt.Errorf("ssh connection failed: %s: %w", ctx.Err(), lastErr)
+		case <-ticker.C:
+			retry, lastErr := ssh(args)
+			if lastErr == nil {
+				return nil
+			}
+
+			if !retry {
+				return lastErr
+			}
+		}
+	}
 }

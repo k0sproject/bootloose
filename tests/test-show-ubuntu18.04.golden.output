@@ -1,5 +1,5 @@
-NAME                          HOSTNAME   PORTS       IP   IMAGE                           CMD   STATE         BACKEND
-test-show-ubuntu18.04-node0   node0      0->{22 0}        quay.io/footloose/ubuntu18.04         Not created   docker
+NAME                          HOSTNAME   PORTS       IP   IMAGE         CMD   STATE         BACKEND
+test-show-ubuntu18.04-node0   node0      0->{22 0}        ubuntu18.04         Not created   docker
 {
   "machines": [
     {
@@ -7,7 +7,7 @@ test-show-ubuntu18.04-node0   node0      0->{22 0}        quay.io/footloose/ubun
       "state": "Not created",
       "spec": {
         "name": "node%d",
-        "image": "quay.io/footloose/ubuntu18.04",
+        "image": "ubuntu18.04",
         "portMappings": [
           {
             "containerPort": 22
@@ -22,7 +22,7 @@ test-show-ubuntu18.04-node0   node0      0->{22 0}        quay.io/footloose/ubun
         }
       ],
       "hostname": "node0",
-      "image": "quay.io/footloose/ubuntu18.04",
+      "image": "ubuntu18.04",
       "cmd": "",
       "ip": ""
     }

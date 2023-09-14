@@ -1,3 +1,4 @@
+[![Build status](https://github.com/k0sproject/footloose/actions/workflows/go.yml)]
 [![Go Report Card](https://goreportcard.com/badge/github.com/k0sproject/footloose)](https://goreportcard.com/report/github.com/k0sproject/footloose)
 [![GoDoc](https://godoc.org/github.com/k0sproject/footloose?status.svg)](https://godoc.org/github.com/k0sproject/footloose)
 

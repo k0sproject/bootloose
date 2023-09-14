@@ -5,10 +5,11 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/k0sproject/footloose/pkg/api"
 	"github.com/k0sproject/footloose/pkg/cluster"
 	"github.com/k0sproject/footloose/pkg/config"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 type env struct {
@@ -50,15 +51,15 @@ func TestCreateDeletePublicKey(t *testing.T) {
 		Name: "testpublickey",
 		Key:  publicKey,
 	})
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	data, err := env.client.GetPublicKey("testpublickey")
+	require.NoError(t, err)
 	assert.Equal(t, "testpublickey", data.Name)
 	assert.Equal(t, publicKey, data.Key)
-	assert.NoError(t, err)
 
 	err = env.client.DeletePublicKey("testpublickey")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 }
 
 func TestCreateDeleteCluster(t *testing.T) {
@@ -69,10 +70,10 @@ func TestCreateDeleteCluster(t *testing.T) {
 		Name:       "testcluster",
 		PrivateKey: "testcluster-key",
 	})
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	err = env.client.DeleteCluster("testcluster")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 }
 
 func TestCreateDeleteMachine(t *testing.T) {
@@ -83,24 +84,24 @@ func TestCreateDeleteMachine(t *testing.T) {
 		Name:       "testcluster",
 		PrivateKey: "testcluster-key",
 	})
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	err = env.client.CreateMachine("testcluster", &config.Machine{
 		Name:  "testmachine",
-		Image: "quay.io/footloose/centos7:latest",
+		Image: "quay.io/footloose/centos7:latest", // TODO use a k0sproject hosted image
 		PortMappings: []config.PortMapping{
 			{ContainerPort: 22},
 		},
 	})
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	status, err := env.client.GetMachine("testcluster", "testmachine")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, "testmachine", status.Spec.Name)
 
 	err = env.client.DeleteMachine("testcluster", "testmachine")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	err = env.client.DeleteCluster("testcluster")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 }

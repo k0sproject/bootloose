@@ -1,1 +1,0 @@
-footloose create --config %testName.static
