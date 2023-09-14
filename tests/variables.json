@@ -1,6 +1,8 @@
 {
   "image": [
+    "alpine3.18",
     "amazonlinux2023",
+    "amazonlinux2",
     "centos7",
     "fedora38",
     "ubuntu18.04",
