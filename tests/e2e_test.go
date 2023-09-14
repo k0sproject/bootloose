@@ -169,16 +169,21 @@ func exists(filename string) bool {
 	return err == nil
 }
 
+func (t *test) basefile() string {
+	ext := filepath.Ext(t.file)
+	return t.file[:len(t.file)-len(ext)]
+}
+
 func (t *test) shouldErrorOut() bool {
-	return exists(t.testname + ".error")
+	return exists(t.basefile() + ".error")
 }
 
 func (t *test) shouldSkip() bool {
-	return exists(t.testname + ".skip")
+	return exists(t.basefile() + ".skip")
 }
 
 func (t *test) isLong() bool {
-	return exists(t.testname + ".long")
+	return exists(t.basefile() + ".long")
 }
 
 func (t *test) outputDir() string {
@@ -252,11 +257,7 @@ func (t *test) run() (string, error) {
 		testCmd := t.parseCmd(line)
 		cmd := exec.Command(testCmd.name, testCmd.args...)
 		if testCmd.doDefer {
-			defer func() {
-				if err := cmd.Run(); err != nil {
-					println("info: deferred command failed:", err.Error())
-				}
-			}()
+			defer func() { _ = cmd.Run() }()
 			continue
 		}
 		if testCmd.captureOutput {

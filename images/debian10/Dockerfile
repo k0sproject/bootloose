@@ -30,11 +30,16 @@ RUN systemctl mask \
     systemd-update-utmp.service \
     systemd-tmpfiles-setup.service \
     console-getty.service
+RUN systemctl disable \
+      networkd-dispatcher.service
 
 # This container image doesn't have locales installed. Disable forwarding the
 # user locale env variables or we get warnings such as:
 #  bash: warning: setlocale: LC_ALL: cannot change locale
 RUN sed -i -e 's/^AcceptEnv LANG LC_\*$/#AcceptEnv LANG LC_*/' /etc/ssh/sshd_config
+
+# This may be needed for some systemd services to start properly.
+RUN echo "#!/bin/sh\nexit 0" > /usr/sbin/policy-rc.d
 
 # https://www.freedesktop.org/wiki/Software/systemd/ContainerInterface/
 STOPSIGNAL SIGRTMIN+3
