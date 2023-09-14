@@ -273,7 +273,7 @@ func (t *test) goldenOutput() string {
 	// testname.golden.output takes precedence.
 	golden, err := os.ReadFile(t.testname + ".golden.output")
 	if err == nil {
-		return t.expandVars(string(golden))
+		return strings.TrimSpace(t.expandVars(string(golden)))
 	}
 
 	// Expand a generic golden output.
@@ -285,7 +285,7 @@ func (t *test) goldenOutput() string {
 		return ""
 	}
 
-	return t.expandVars(string(data))
+	return strings.TrimSpace(t.expandVars(string(data)))
 }
 
 func runTest(t *testing.T, test *test) {
@@ -311,7 +311,7 @@ func runTest(t *testing.T, test *test) {
 	}
 
 	// 1. Compare stdout/err.
-	assert.Equal(t, test.goldenOutput(), string(output))
+	assert.Equal(t, test.goldenOutput(), strings.TrimSpace(string(output)))
 
 	// 2. Compare produced files.
 	goldenFiles, _ := find(goldenDir)
