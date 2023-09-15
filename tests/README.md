@@ -85,24 +85,3 @@ file without the extension.
 golden output. In the example above the result of the remote `hostname`
 command will be compared to `node0`.
 
-It is also possible to have user-defined variables, variables that are
-specified outside of the test framework. In the example above, `%image` is
-such a variable. User-defined variables are kept in `variables.json`:
-
-
-```json
-{
-  "image": [
-    "amazonlinux2",
-    "centos7",
-    "fedora29",
-    "ubuntu16.04",
-    "ubuntu18.04",
-    "debian10"
-  ]
-}
-```
-
-The test framework will instantiate a separate test case for each value of
-the `image` array. For this to work, the `.cmd` file will need to reference
-`%image` in its name too in order keep the test name unique.
