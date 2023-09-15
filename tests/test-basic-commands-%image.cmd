@@ -11,4 +11,4 @@ footloose --config %testName.footloose ssh root@node0 -- command -v ping
 footloose --config %testName.footloose ssh root@node0 -- curl --version
 footloose --config %testName.footloose ssh root@node0 -- wget --version
 footloose --config %testName.footloose ssh root@node0 -- vi --help
-footloose --config %testName.footloose ssh root@node0 -- sudo true
+footloose --config %testName.footloose ssh root@node0 -- sudo -n true || doas -n true

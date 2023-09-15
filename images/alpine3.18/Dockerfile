@@ -6,6 +6,7 @@ RUN apk add --no-cache \
   bash \
   shadow \
   doas \
+  curl \
   && rc-update add syslog boot \
   && rc-update add sshd default \
   && rc-update add local default \
@@ -14,4 +15,7 @@ RUN apk add --no-cache \
 # prevent start-stop-daemon from hanging when max_fds is huge
   && sed -Ei -e 's/^[# ](rc_ulimit)=.*/\1="-n 16384"/' /etc/rc.conf \
 # no greetings
-  && truncate -c -s0 /etc/issue /etc/motd
+  && truncate -c -s0 /etc/issue /etc/motd \
+# allow root to use doas
+  && echo permit :wheel >> /etc/doas.d/doas.conf \
+  && echo permit nopass keepenv root >> /etc/doas.d/doas.conf
