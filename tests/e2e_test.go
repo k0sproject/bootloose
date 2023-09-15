@@ -2,7 +2,6 @@ package tests
 
 import (
 	"bufio"
-	"encoding/json"
 	"flag"
 	"fmt"
 	"os"
@@ -346,21 +345,6 @@ func runTest(t *testing.T, test *test) {
 	}
 }
 
-func loadVariables(t *testing.T) variables {
-	data, err := os.ReadFile("variables.json")
-	if err != nil {
-		// it's allowed to not have any variable!
-		return nil
-	}
-
-	vars := make(variables)
-	if err := json.Unmarshal(data, &vars); err != nil {
-		t.Fatalf("variables.json: %v", err)
-	}
-
-	return vars
-}
-
 func listTests(t *testing.T, vars variables) []test {
 	files, err := filepath.Glob("test-*.cmd")
 	require.NoError(t, err)
@@ -398,15 +382,20 @@ func listTests(t *testing.T, vars variables) []test {
 	return expanded
 }
 
-var singleImage = flag.String("image", "", "Docker image to use for testing (default: use all from variables.json)")
+var imageFlag = flag.String("image", "", "Docker image or comma separated images to use for testing")
 
 func TestEndToEnd(t *testing.T) {
-	vars := loadVariables(t)
-	if *singleImage != "" {
-		vars["image"] = []string{*singleImage}
+	images := strings.Split(*imageFlag, ",")
+	if len(images) == 0 {
+		t.Fatal("No images specified")
 	}
+	vars := variables{"image": images}
 
 	tests := listTests(t, vars)
+
+	if len(tests) == 0 {
+		t.Fatal("No tests found")
+	}
 
 	for _, test := range tests {
 		t.Run(test.name(), func(t *testing.T) {
