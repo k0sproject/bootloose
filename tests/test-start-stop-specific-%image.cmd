@@ -1,4 +1,5 @@
 footloose config create --override --config %testName.footloose --name %testName --key %testName-key --image %image --replicas 3
+%defer rm -f %testName.footloose %testName-key %testName-key.pub
 %defer footloose delete --config %testName.footloose
 footloose create --config %testName.footloose
 footloose stop %testName-node1 --config %testName.footloose
