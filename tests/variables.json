@@ -2,7 +2,7 @@
   "image": [
     "amazonlinux2",
     "centos7",
-    "fedora29",
+    "fedora38",
     "ubuntu18.04",
     "ubuntu20.04",
     "debian10",
