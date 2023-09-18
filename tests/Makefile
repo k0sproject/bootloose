@@ -6,11 +6,8 @@ test-all: $(STAMPS) install
 	@go test ./ -args -image=$($(MAKE) -C ../images list IFS=,)
 
 # Test individual images
-test-%: ../images/.stamp-% install
+test-%: ../images/.stamp-%
 	@go test -v -args -image=$* ./...
 
-install:
-	$(MAKE) -C .. install
-
 # Phony targets
-.PHONY: test-all list test-% install
+.PHONY: test-all list test-%

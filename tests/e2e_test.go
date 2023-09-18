@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"sort"
 	"strings"
 	"testing"
@@ -203,6 +204,12 @@ func (t *test) image() string {
 	return parts[len(parts)-1]
 }
 
+// returns the path to to project root (assuming this file is still in the tests/ directory)
+func appPath() string {
+	_, self, _, _ := runtime.Caller(0)
+	return filepath.Dir(filepath.Dir(self))
+}
+
 func (t *test) expandVars(s string) string {
 	replacements := copyArray(t.vars)
 	replacements = append(replacements,
@@ -216,6 +223,7 @@ func (t *test) expandVars(s string) string {
 
 func (t *test) parseCmd(line string) cmd {
 	parts := strings.Split(line, " ")
+	goRun := []string{"go", "run", appPath() + "/."}
 
 	// Replace special strings
 	for i := range parts {
@@ -223,13 +231,20 @@ func (t *test) parseCmd(line string) cmd {
 	}
 
 	cmd := cmd{}
-	switch parts[0] {
-	case "%out":
-		cmd.captureOutput = true
-		parts = parts[1:]
-	case "%defer":
-		cmd.doDefer = true
-		parts = parts[1:]
+
+	replaceOuter: for {
+		switch parts[0] {
+		case "%out":
+			cmd.captureOutput = true
+			parts = parts[1:]
+		case "%defer":
+			cmd.doDefer = true
+			parts = parts[1:]
+		case "footloose":
+			parts = append(goRun, parts[1:]...)
+		default:
+			break replaceOuter
+		}
 	}
 
 	cmd.name = parts[0]

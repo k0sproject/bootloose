@@ -81,9 +81,6 @@ jobs:
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache
     
-    - name: Run go install
-      run: go install
-
     - name: Remove any leftover footloose machines
       run: docker ps -a --filter "label=io.k0sproject.footloose.owner=footloose" --format "{{.ID}}" | xargs -r docker rm
 
