@@ -22,7 +22,7 @@ on:
 
 jobs:
   prepare:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
       hash: ${{ steps.set-hash.outputs.hash }}
@@ -44,7 +44,7 @@ jobs:
 
   run_tests:
     needs: prepare
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     strategy:
       matrix: ${{fromJson(needs.prepare.outputs.matrix)}}
       fail-fast: false
