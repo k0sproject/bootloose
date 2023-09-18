@@ -231,8 +231,8 @@ func (t *test) parseCmd(line string) cmd {
 	}
 
 	cmd := cmd{}
-	var done bool
-	for !done {
+
+	replaceOuter: for {
 		switch parts[0] {
 		case "%out":
 			cmd.captureOutput = true
@@ -243,7 +243,7 @@ func (t *test) parseCmd(line string) cmd {
 		case "footloose":
 			parts = append(goRun, parts[1:]...)
 		default:
-		  done = true
+			break replaceOuter
 		}
 	}
 
