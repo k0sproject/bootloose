@@ -48,10 +48,7 @@ jobs:
     needs: prepare
     runs-on: ubuntu-20.04
     strategy:
-      matrix:
-        image:
-          - debian10 # disable everything else while investigating this
-      # matrix: ${{fromJson(needs.prepare.outputs.matrix)}}
+      matrix: ${{fromJson(needs.prepare.outputs.matrix)}}
       fail-fast: false
     steps:
     - name: Checkout code
