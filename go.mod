@@ -4,7 +4,7 @@ go 1.21.0
 
 require (
 	github.com/blang/semver v3.5.1+incompatible
-	github.com/docker/docker v24.0.5+incompatible
+	github.com/docker/docker v24.0.6+incompatible
 	github.com/ghodss/yaml v1.0.0
 	github.com/google/go-github/v24 v24.0.1
 	github.com/gorilla/mux v1.8.0
