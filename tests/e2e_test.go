@@ -231,15 +231,20 @@ func (t *test) parseCmd(line string) cmd {
 	}
 
 	cmd := cmd{}
-	switch parts[0] {
-	case "%out":
-		cmd.captureOutput = true
-		parts = parts[1:]
-	case "%defer":
-		cmd.doDefer = true
-		parts = parts[1:]
-	case "footloose":
-		parts = append(goRun, parts[1:]...)
+	var done bool
+	for !done {
+		switch parts[0] {
+		case "%out":
+			cmd.captureOutput = true
+			parts = parts[1:]
+		case "%defer":
+			cmd.doDefer = true
+			parts = parts[1:]
+		case "footloose":
+			parts = append(goRun, parts[1:]...)
+		default:
+		  done = true
+		}
 	}
 
 	cmd.name = parts[0]
