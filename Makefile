@@ -1,12 +1,51 @@
+GO_SRCS := $(shell find . -type f -name '*.go' -a ! \( -name 'zz_generated*' -o -name '*_test.go' \))
+GO_TESTS := $(shell find . -type f -name '*_test.go')
+TAG_NAME = $(shell git describe --tags --abbrev=0 --exact-match 2>/dev/null)
+GIT_COMMIT = $(shell git rev-parse --short=7 HEAD)
+ifdef TAG_NAME
+	ENVIRONMENT = production
+endif
+ENVIRONMENT ?= development
+LD_FLAGS = -s -w -X github.com/k0sproject/footloose/version.Environment=$(ENVIRONMENT) -X github.com/carlmjohnson/versioninfo.Revision=$(GIT_COMMIT) -X github.com/carlmjohnson/versioninfo.Version=$(TAG_NAME)
+BUILD_FLAGS = -trimpath -a -tags "netgo,osusergo,static_build" -installsuffix netgo -ldflags "$(LD_FLAGS) -extldflags '-static'"
+PREFIX = /usr/local
+
+BIN_PREFIX := footloose-
+
 all: footloose
 
-footloose: bin/footloose
-
-bin/footloose:
+footloose:
 	go build -v -o bin/footloose .
+	go build -v $(BUILD_FLAGS) -o bin/footloose .
 
-install:
-	go install -v .
+PLATFORMS := linux-amd64 linux-arm64 linux-arm darwin-amd64 darwin-arm64
+bins := $(foreach platform, $(PLATFORMS), bin/$(BIN_PREFIX)$(platform))
+
+$(bins):
+	$(eval temp := $(subst -, ,$(subst $(BIN_PREFIX),,$(notdir $@))))
+	$(eval OS := $(word 1, $(subst -, ,$(temp))))
+	$(eval ARCH := $(word 2, $(subst -, ,$(temp))))
+	GOOS=$(OS) GOARCH=$(ARCH) CGO_ENABLED=0 go build $(BUILD_FLAGS) -o $@ .
+
+bin/%: $(GO_SRCS)
+	GOOS=$(OS) GOARCH=$(ARCH) CGO_ENABLED=$(CGO_ENABLED) go build $(BUILD_FLAGS) -o $@ .
+
+bin/sha256sums.txt: $(bins)
+	sha256sum -b $(bins) | sed 's|bin/||' > $@
+
+# for use in release markdown
+bin/sha256sums.md: bin/sha256sums.txt
+	@echo "### SHA256 Checksums" > $@
+	@echo >> $@
+	@echo "\`\`\`" >> $@
+	@cat $< >> $@
+	@echo "\`\`\`" >> $@
+
+build-all: $(bins) bin/sha256sums.md
+
+install: footloose
+	install -d $(DESTDIR)$(PREFIX)/bin/
+	install -m 755 footloose $(DESTDIR)$(PREFIX)/bin/
 
 # Build all images
 images:
@@ -36,7 +75,7 @@ list-images:
 # Clean up all stamps and other generated files
 clean:
 	@$(MAKE) -C images clean
-	rm -f bin/footloose
+	rm -f footloose bin/
 
 # Phony targets
-.PHONY: images image-% test-unit test-e2e test-e2e-% list-images clean
+.PHONY: install images image-% test-unit test-e2e test-e2e-% list-images clean build-all

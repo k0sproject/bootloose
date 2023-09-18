@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"strings"
 
-	release "github.com/k0sproject/footloose/pkg/version"
+	_ "github.com/carlmjohnson/versioninfo" // Needed to set version info during go install
+	"github.com/k0sproject/footloose/version"
 
 	"github.com/spf13/cobra"
 )
@@ -16,22 +16,16 @@ var versionCmd = &cobra.Command{
 }
 
 func init() {
+	versionCmd.Flags().BoolP("long", "l", false, "Print long version")
 	footloose.AddCommand(versionCmd)
 }
 
-var version = "git"
-
-func showVersion(cmd *cobra.Command, args []string) {
-	fmt.Println("version:", version)
-	if version == "git" {
+func showVersion(cmd *cobra.Command, _ []string) {
+	if long, err := cmd.Flags().GetBool("long"); err == nil && long {
+		fmt.Println("version:", version.Version)
+		fmt.Printf("commit: %s\n", version.GitCommit)
+		fmt.Printf("environment: %s\n", version.Environment)
 		return
 	}
-	release, err := release.FindLastRelease()
-	if err != nil {
-		fmt.Println("version: failed to check for new versions. You may want to check yourself at https://github.com/k0sproject/footloose/releases.")
-		return
-	}
-	if strings.Compare(version, *release.TagName) != 0 {
-		fmt.Printf("New version %v is available. More information at: %v\n", *release.TagName, *release.HTMLURL)
-	}
+	fmt.Println(version.Version)
 }

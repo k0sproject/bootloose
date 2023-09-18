@@ -4,9 +4,9 @@ go 1.21.0
 
 require (
 	github.com/blang/semver v3.5.1+incompatible
+	github.com/carlmjohnson/versioninfo v0.22.5
 	github.com/docker/docker v24.0.6+incompatible
 	github.com/ghodss/yaml v1.0.0
-	github.com/google/go-github/v24 v24.0.1
 	github.com/gorilla/mux v1.8.0
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/pkg/errors v0.9.1
@@ -22,8 +22,6 @@ require (
 	github.com/docker/go-connections v0.4.0 // indirect
 	github.com/docker/go-units v0.5.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
-	github.com/google/go-cmp v0.5.9 // indirect
-	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/opencontainers/go-digest v1.0.0 // indirect
 	github.com/opencontainers/image-spec v1.0.2 // indirect
