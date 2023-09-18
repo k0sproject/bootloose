@@ -3,7 +3,7 @@ include ../images/Makefile
 
 # Test all images
 test-all: $(STAMPS) install
-	@go test ./ -image=$($(MAKE) -C ../images list IFS=,)
+	@go test ./ -args -image=$($(MAKE) -C ../images list IFS=,)
 
 # Test individual images
 test-%: ../images/.stamp-% install

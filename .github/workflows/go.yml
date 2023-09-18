@@ -10,6 +10,7 @@ on:
       - 'go.mod'
       - 'go.sum'
       - '**/Dockerfile'
+      - 'tests/*'
   pull_request:
     branches:
       - main
@@ -19,6 +20,7 @@ on:
       - 'go.mod'
       - 'go.sum'
       - '**/Dockerfile'
+      - 'tests/*'
 
 jobs:
   prepare:
