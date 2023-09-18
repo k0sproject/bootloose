@@ -30,8 +30,6 @@ RUN systemctl mask \
     systemd-update-utmp.service \
     systemd-tmpfiles-setup.service \
     console-getty.service
-RUN systemctl disable \
-      networkd-dispatcher.service
 
 # This container image doesn't have locales installed. Disable forwarding the
 # user locale env variables or we get warnings such as:
