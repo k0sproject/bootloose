@@ -3,7 +3,13 @@ footloose config create --config %testName.footloose --override --name %testName
 %defer rm -f %testName.footloose %testName-key %testName-key.pub
 %defer footloose delete --config %testName.footloose
 footloose create --config %testName.footloose
-footloose --config %testName.footloose ssh root@node0 hostname
+
+%1 footloose --config %testName.footloose ssh root@node0 hostname
+%assert equal %1 node0
+
+# test capture interpolation
+footloose --config %testName.footloose ssh root@%1 -- uname -a
+
 footloose --config %testName.footloose ssh root@node0 ps
 footloose --config %testName.footloose ssh root@node0 ifconfig
 footloose --config %testName.footloose ssh root@node0 ip route

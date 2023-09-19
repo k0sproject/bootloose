@@ -2,13 +2,16 @@ package tests
 
 import (
 	"bufio"
+	"bytes"
 	"flag"
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
 	"sort"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -128,30 +131,13 @@ func TestVariableExpansion(t *testing.T) {
 	}, v.expand("foo"))
 }
 
-func find(dir string) ([]string, error) {
-	var files []string
-
-	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
-		switch {
-		case err != nil:
-			return err
-		case info.IsDir():
-			return nil
-		case strings.HasSuffix(path, "~"):
-			return nil
-		}
-		files = append(files, strings.TrimPrefix(path, dir))
-		return nil
-	})
-
-	return files, err
-}
-
 // test is a end to end test, corresponding to one test-$testname.cmd file.
 type test struct {
-	testname string   // test name, after variable resolution.
-	file     string   // name of the test file (test-*.cmd), without the extentension.
-	vars     []string // user-defined variables list of key, value pairs.
+	testname   string          // test name, after variable resolution.
+	file       string          // name of the test file (test-*.cmd), without the extentension.
+	vars       []string        // user-defined variables list of key, value pairs.
+	captures   []*bytes.Buffer // captured output to %1, %2, etc.
+	shouldFail bool
 }
 
 type byName []test
@@ -191,12 +177,11 @@ func (t *test) outputDir() string {
 }
 
 type cmd struct {
-	name string
-	args []string
-	// should we capture the command output to be tested against the golden
-	// output?
-	captureOutput bool
-	doDefer       bool
+	name    string
+	args    []string
+	doDefer bool
+	stdout  io.Writer
+	stderr  io.Writer
 }
 
 func (t *test) image() string {
@@ -210,35 +195,58 @@ func appPath() string {
 	return filepath.Dir(filepath.Dir(self))
 }
 
-func (t *test) expandVars(s string) string {
+func (t *test) replacer() *strings.Replacer {
 	replacements := copyArray(t.vars)
 	replacements = append(replacements,
 		"%testOutputDir", t.outputDir(),
 		"%testName", t.name(),
 		"%image", t.image(),
 	)
-	replacer := strings.NewReplacer(replacements...)
-	return replacer.Replace(s)
+	for i := 1; i <= 9; i++ {
+		replacements = append(replacements, "%"+strconv.Itoa(i), strings.TrimSpace(t.captures[i].String()))
+	}
+
+	return strings.NewReplacer(replacements...)
 }
 
-func (t *test) parseCmd(line string) cmd {
+func (t *test) expandVars(s string) string {
+	return t.replacer().Replace(s)
+}
+
+func (t *test) parseCmd(tt *testing.T, line string, lineno int) (*cmd, error) {
 	parts := strings.Split(line, " ")
 	goRun := []string{"go", "run", appPath() + "/."}
 
-	// Replace special strings
-	for i := range parts {
-		parts[i] = t.expandVars(parts[i])
-	}
+	cmd := &cmd{}
 
-	cmd := cmd{}
-
-	replaceOuter: for {
+replaceOuter:
+	for {
 		switch parts[0] {
 		case "%out":
-			cmd.captureOutput = true
+			cmd.stdout = t.captures[0]
+			cmd.stderr = t.captures[0]
 			parts = parts[1:]
 		case "%defer":
 			cmd.doDefer = true
+			parts = parts[1:]
+			cmd.stdout = os.Stdout
+			cmd.stderr = os.Stderr
+		case "%1", "%2", "%3", "%4", "%5", "%6", "%7", "%8", "%9":
+			numInt, err := strconv.Atoi(parts[0][1:])
+			if err != nil {
+				return nil, fmt.Errorf("invalid capture number %s: %w", parts[0], err)
+			}
+			cmd.stderr = os.Stderr
+			cmd.stdout = t.captures[numInt]
+			parts = parts[1:]
+		case "%assert":
+			if len(parts) < 2 {
+				return nil, fmt.Errorf("assert requires at least one argument")
+			}
+			t.assert(tt, lineno, parts[1:]...)
+			return nil, nil
+		case "%error":
+			t.shouldFail = true
 			parts = parts[1:]
 		case "footloose":
 			parts = append(goRun, parts[1:]...)
@@ -247,56 +255,140 @@ func (t *test) parseCmd(line string) cmd {
 		}
 	}
 
+	replacer := t.replacer()
+
+	// Replace special strings
+	for i := range parts {
+		parts[i] = replacer.Replace(parts[i])
+	}
+
 	cmd.name = parts[0]
 	cmd.args = parts[1:]
-	return cmd
-
+	return cmd, nil
 }
 
-func (t *test) run() (string, error) {
+func (t *test) testString(s ...string) string {
+	if len(s) == 0 {
+		return ""
+	}
+
+	if len(s) == 1 && len(s[0]) == 2 && s[0][0] == '%' {
+		numInt, err := strconv.Atoi(s[0][1:])
+		if err != nil {
+			return ""
+		}
+		return strings.TrimSpace(t.captures[numInt].String())
+	}
+	return strings.TrimSpace(strings.Join(s, " "))
+}
+
+func (t *test) assert(tt *testing.T, lineno int, args ...string) {
+	if len(args) < 2 {
+		tt.Fatal("assert requires at least two arguments on line", lineno)
+	}
+
+	switch args[0] {
+	case "equal", "notequal", "contains", "notcontains":
+		if len(args) < 3 {
+			tt.Fatalf("assert %s requires at least two arguments on line %d", args[0], lineno)
+		}
+
+		strA := t.testString(args[1])
+		strB := t.testString(args[2:]...)
+
+		switch args[0] {
+		case "equal":
+			assert.Equalf(tt, strA, strB, "assert equal at %s:%d failed: %s != %s", t.file, lineno, strA, strB)
+		case "notequal":
+			assert.NotEqualf(tt, strA, strB, "assert notequal at %s:%d failed: %s == %s", t.file, lineno, strA, strB)
+		case "contains":
+			assert.Containsf(tt, strA, strB, "assert contains at %s:%d failed: %s does not contain %s", t.file, lineno, strA, strB)
+		case "notcontains":
+			assert.NotContainsf(tt, strA, strB, "assert notcontains at %s:%d failed: %s contains %s", t.file, lineno, strA, strB)
+		}
+	case "empty", "notempty":
+		if len(args) != 2 {
+			tt.Fatalf("assert %s requires exactly one argument", args[0])
+		}
+		switch args[0] {
+		case "empty":
+			assert.Emptyf(tt, t.testString(args[1]), "assert empty at %s:%d failed: %s is not empty", t.file, lineno, t.testString(args[1]))
+		case "notempty":
+			assert.NotEmptyf(tt, t.testString(args[1]), "assert notempty at %s:%d failed: test string is empty", t.file, lineno)
+		}
+	}
+}
+
+func (t *test) run(tt *testing.T) error {
 	f, err := os.Open(t.file)
 	if err != nil {
-		return "", err
+		return fmt.Errorf("failed to open command file: %w", err)
 	}
 	defer f.Close()
 
-	var capturedOutput strings.Builder
-
 	scanner := bufio.NewScanner(f)
+	lineno := 0
 	for scanner.Scan() {
 		line := scanner.Text()
-		if line[0] == '#' {
+		lineno++
+		if strings.HasPrefix(line, "#") || strings.TrimSpace(line) == "" {
 			continue
 		}
-		testCmd := t.parseCmd(line)
+		testCmd, err := t.parseCmd(tt, line, lineno)
+		if err != nil {
+			return fmt.Errorf("failed to parse command: %w", err)
+		}
+		if testCmd == nil {
+			continue
+		}
 		cmd := exec.Command(testCmd.name, testCmd.args...)
+		stdoutBuf := bytes.Buffer{}
+		stderrBuf := bytes.Buffer{}
+		if testCmd.stdout == nil {
+			testCmd.stdout = &stdoutBuf
+		} else {
+			testCmd.stdout = io.MultiWriter(testCmd.stdout, &stdoutBuf)
+		}
+		if testCmd.stderr == nil {
+			testCmd.stderr = &stderrBuf
+		} else {
+			testCmd.stderr = io.MultiWriter(testCmd.stderr, &stderrBuf)
+		}
+
+		if os.Getenv("DEBUG") != "" {
+			tt.Log("Running", testCmd.name, strings.Join(testCmd.args, " "))
+			testCmd.stdout = io.MultiWriter(testCmd.stdout, os.Stdout)
+			testCmd.stderr = io.MultiWriter(testCmd.stderr, os.Stderr)
+		}
+
+		cmd.Stdout = testCmd.stdout
+		cmd.Stderr = testCmd.stderr
+
 		if testCmd.doDefer {
-			defer func() { _ = cmd.Run() }()
+			defer func() {
+				if os.Getenv("DEBUG") == "" {
+					cmd.Stdout = io.Discard
+					cmd.Stderr = io.Discard
+				} else {
+					tt.Log("Running deferred", testCmd.name, strings.Join(testCmd.args, " "))
+				}
+				_ = cmd.Run()
+			}()
 			continue
 		}
-		if testCmd.captureOutput {
-			output, err := cmd.CombinedOutput()
-			if err != nil {
-				return "", fmt.Errorf("failed to run command cmd=%s args=%v error:%w output: %s", testCmd.name, testCmd.args, err, string(output))
-			}
-			capturedOutput.Write(output)
-		} else {
-			cmd.Stdout = os.Stdout
-			cmd.Stderr = os.Stderr
-			if err := cmd.Run(); err != nil {
-				return "", err
-			}
+		if err := cmd.Run(); err != nil {
+			return fmt.Errorf("%w: line %d of %s (`%s %s`) stdout: `%s` stderr: `%s`", err, lineno, t.file, testCmd.name, strings.Join(testCmd.args, " "), stdoutBuf.String(), stderrBuf.String())
 		}
 	}
 
 	if err := scanner.Err(); err != nil {
-		return "", err
+		return fmt.Errorf("failed to read command file: %w", err)
 	}
 
-	return capturedOutput.String(), nil
+	return nil
 }
 
-func (t *test) goldenOutput() string {
+func (t *test) expectedOutput() string {
 	// testname.golden.output takes precedence.
 	golden, err := os.ReadFile(t.testname + ".golden.output")
 	if err == nil {
@@ -315,49 +407,27 @@ func (t *test) goldenOutput() string {
 	return strings.TrimSpace(t.expandVars(string(data)))
 }
 
-func runTest(t *testing.T, test *test) {
-	base := test.file
-	goldenDir := base + ".golden"
-	gotDir := base + ".got"
+func (t *test) output() string {
+	return strings.TrimSpace(t.captures[0].String())
+}
 
+func runTest(t *testing.T, test *test) {
 	if test.shouldSkip() {
 		return
 	}
 
-	output, err := test.run()
+	err := test.run(t)
 
 	// 0. Check process exit code.
 	if test.shouldErrorOut() {
-		_, ok := err.(*exec.ExitError)
-		assert.True(t, ok, err.Error())
+		require.Error(t, err)
+		targetErr := new(exec.ExitError)
+		assert.ErrorAs(t, err, &targetErr)
 	} else {
-		if err != nil {
-			t.Logf("output: %s", output)
-		}
 		require.NoError(t, err)
 	}
 
-	// 1. Compare stdout/err.
-	assert.Equal(t, test.goldenOutput(), strings.TrimSpace(string(output)))
-
-	// 2. Compare produced files.
-	goldenFiles, _ := find(goldenDir)
-	gotFiles, _ := find(gotDir)
-
-	// 2. a) Compare the list of files.
-	if !assert.Equal(t, goldenFiles, gotFiles) {
-		assert.FailNow(t, "generated files not equivalent; bail")
-	}
-
-	// 2. b) Compare file content.
-	for i := range goldenFiles {
-		golden, err := os.ReadFile(goldenDir + goldenFiles[i])
-		require.NoError(t, err)
-		got, err := os.ReadFile(gotDir + gotFiles[i])
-		require.NoError(t, err)
-
-		assert.Equal(t, string(golden), string(got))
-	}
+	assert.Equal(t, test.expectedOutput(), test.output(), "output does not match expected output")
 }
 
 func listTests(t *testing.T, vars variables) []test {
@@ -385,10 +455,15 @@ func listTests(t *testing.T, vars variables) []test {
 				continue
 			}
 
+			captures := make([]*bytes.Buffer, 10)
+			for i := range captures {
+				captures[i] = &bytes.Buffer{}
+			}
 			expanded = append(expanded, test{
 				testname: testname,
 				file:     f,
 				vars:     item.combination,
+				captures: captures,
 			})
 		}
 	}
