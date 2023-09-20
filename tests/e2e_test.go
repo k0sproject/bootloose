@@ -160,10 +160,6 @@ func (t *test) basefile() string {
 	return t.file[:len(t.file)-len(ext)]
 }
 
-func (t *test) shouldErrorOut() bool {
-	return exists(t.basefile() + ".error")
-}
-
 func (t *test) shouldSkip() bool {
 	return exists(t.basefile() + ".skip")
 }
@@ -418,8 +414,7 @@ func runTest(t *testing.T, test *test) {
 
 	err := test.run(t)
 
-	// 0. Check process exit code.
-	if test.shouldErrorOut() {
+	if test.shouldFail {
 		require.Error(t, err)
 		targetErr := new(exec.ExitError)
 		assert.ErrorAs(t, err, &targetErr)
