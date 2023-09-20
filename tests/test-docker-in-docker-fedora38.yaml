@@ -1,13 +1,13 @@
 cluster:
-  name: test-docker-in-docker-fedora29
-  privateKey: test-docker-in-docker-fedora29-key
+  name: test-docker-in-docker-fedora38
+  privateKey: test-docker-in-docker-fedora38-key
 machines:
 - count: 1
   spec:
     volumes:
     - type: volume
       destination: /var/lib/docker
-    image: fedora29
+    image: fedora38
     name: node%d
     portMappings:
     - containerPort: 22
