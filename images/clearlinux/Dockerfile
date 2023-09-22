@@ -7,6 +7,12 @@ RUN echo 'root:*:17995::::::' > /etc/shadow
 
 EXPOSE 22
 
+RUN echo -e '#!/bin/sh\n[ -f "/etc/machine-id" ] && rm -f /etc/machine-id\ndbus-uuidgen --ensure=/etc/machine-id\nexec "$@"' > /entry.sh \
+    && chmod +x /entry.sh
+
 STOPSIGNAL SIGRTMIN+3
+
+# Set the entry script as the entry point
+ENTRYPOINT ["/entry.sh"]
 
 CMD ["/bin/bash"]
