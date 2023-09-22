@@ -1,6 +1,7 @@
 {
   "name": "node%d",
   "image": "%image",
+  "privileged": true,
   "networks": [
     "net1",
     "net2"

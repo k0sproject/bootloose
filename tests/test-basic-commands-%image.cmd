@@ -1,6 +1,6 @@
 # Test that common utilities are present in the base images
 
-footloose config create --config %testName.footloose --override --name %testName --key %testName-key --image %image
+footloose config create --config %testName.footloose --override --name %testName --key %testName-key --privileged --image %image
 %defer rm -f %testName.footloose %testName-key %testName-key.pub
 %defer footloose delete --config %testName.footloose
 footloose create --config %testName.footloose
