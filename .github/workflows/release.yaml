@@ -23,7 +23,7 @@ jobs:
     - name: List images and architecture support
       id: list-arch
       run: |
-        echo "matrix_image_platforms=$(./images/platform-matrix-json.sh)" >> $GITHUB_OUTPUT
+        echo "matrix_image_platforms=$(./image-platform-matrix-json.sh)" >> $GITHUB_OUTPUT
 
   publish_images:
     if: startsWith(github.ref, 'refs/tags/')

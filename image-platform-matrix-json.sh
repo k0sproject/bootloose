@@ -19,31 +19,30 @@ fetch_platforms() {
     | sort | uniq
   }
 
-echo "["
 
+items=""
 first_image=true
-for dockerfile in **/Dockerfile; do
+for dockerfile in images/**/Dockerfile; do
   image_name=$(basename $(dirname $dockerfile))
   upstream_image=$(grep -m 1 'FROM' $dockerfile | cut -d ' ' -f2)
   platforms=$(fetch_platforms $upstream_image)
 
   if [ "$first_image" = true ]; then
     first_image=false
-    echo "{\"image\": \"$image_name\","
   else
-    echo ",{\"image\": \"$image_name\","
+    items+=","
   fi  
-  echo "\"platforms\":["
+  items+="{\"image\": \"$image_name\",\"platforms\":["
   first_platform=true
   for platform in $platforms; do
     if [ "$first_platform" = true ]; then
       first_platform=false
-      echo "\"$platform\""
     else
-      echo ",\"$platform\""
+      items+=","
     fi
+    items+="\"$platform\""
   done
-  echo "]}"
+  items+="]}"
 done
 
-echo "]"
+echo "[$items]"
