@@ -59,9 +59,9 @@ jobs:
         platforms: ${{ matrix.platforms }}
         load: true
         push: true
-        tags: 
-          - quay.io/k0sproject/footloose-${{ matrix.image }}:latest
-          - quay.io/k0sproject/footloose-${{ matrix.image }}:${{ needs.prepare.outputs.tag }}
+        tags: |
+          quay.io/k0sproject/footloose-${{ matrix.image }}:latest
+          quay.io/k0sproject/footloose-${{ matrix.image }}:${{ needs.prepare.outputs.tag }}
         context: images/${{ matrix.image }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache
