@@ -24,7 +24,7 @@ about it is: [Vagrant](https://www.vagrantup.com/), but with containers.
 ### From source
 
 Build and install `footloose` from source. It requires having
-`go >= 1.11` installed:
+`go >= 1.21` installed:
 
 ```console
 go install github.com/k0sproject/footloose/...@latest
@@ -50,7 +50,7 @@ Start the cluster:
 
 ```console
 $ footloose create
-INFO[0000] Pulling image: quay.io/footloose/centos7 ...
+INFO[0000] Pulling image: quay.io/k0sproject/footloose-debian12 ...
 INFO[0007] Creating machine: cluster-node0 ...
 INFO[0008] Creating machine: cluster-node1 ...
 INFO[0008] Creating machine: cluster-node2 ...
@@ -77,29 +77,32 @@ $ footloose ssh root@node1
 
 ## Choosing the OS image to run
 
-`footloose` will default to running a centos 7 container image. The `--image`
+`footloose` will default to running an Ubuntu LTS container image. The `--image`
 argument of `config create` can be used to configure the OS image. Valid OS
 images are:
 
-- `quay.io/footloose/centos7`
-- `quay.io/footloose/fedora29`
-- `quay.io/footloose/ubuntu16.04`
-- `quay.io/footloose/ubuntu18.04`
-- `quay.io/footloose/ubuntu20.04`
-- `quay.io/footloose/amazonlinux2`
-- `quay.io/footloose/debian10`
-- `quay.io/footloose/clearlinux`
+- `quay.io/k0sproject/footloose-alpine3.18`
+- `quay.io/k0sproject/footloose-amazonlinux2023`
+- `quay.io/k0sproject/footloose-amazonlinux2`
+- `quay.io/k0sproject/footloose-clearlinux`
+- `quay.io/k0sproject/footloose-debian10`
+- `quay.io/k0sproject/footloose-debian12`
+- `quay.io/k0sproject/footloose-fedora38`
+- `quay.io/k0sproject/footloose-rockylinux9`
+- `quay.io/k0sproject/footloose-ubuntu18.04`
+- `quay.io/k0sproject/footloose-ubuntu20.04`
+- `quay.io/k0sproject/footloose-ubuntu22.04`
 
 For example:
 
 ```console
-footloose config create --replicas 3 --image quay.io/footloose/fedora29
+footloose config create --replicas 3 --image quay.io/k0sproject/footloose-debian12
 ```
 
-Ubuntu images need the `--privileged` flag:
+Some images need the `--privileged` flag:
 
 ```console
-footloose config create --replicas 1 --image quay.io/footloose/ubuntu16.04 --privileged
+footloose config create --replicas 1 --image quay.io/k0sproject/footloose-ubuntu18.04 --privileged
 ```
 
 ## `footloose.yaml`
@@ -119,7 +122,7 @@ machines:
 - count: 3
   backend: docker
   spec:
-    image: quay.io/footloose/centos7
+    image: quay.io/k0sproject/footloose-debian12
     name: node%d
     portMappings:
     - containerPort: 22
@@ -150,10 +153,10 @@ inspected with `docker`:
 
 ```console
 $ docker ps
-CONTAINER ID    IMAGE                        COMMAND         NAMES
-04c27967f76e    quay.io/footloose/centos7    "/sbin/init"    cluster-node2
-1665288855f6    quay.io/footloose/centos7    "/sbin/init"    cluster-node1
-5134f80b733e    quay.io/footloose/centos7    "/sbin/init"    cluster-node0
+CONTAINER ID    IMAGE                                  COMMAND         NAMES
+04c27967f76e    quay.io/k0sproject/footloose-debian12  "/sbin/init"    cluster-node2
+1665288855f6    quay.io/k0sproject/footloose-debian12  "/sbin/init"    cluster-node1
+5134f80b733e    quay.io/k0sproject/footloose-debian12  "/sbin/init"    cluster-node0
 ```
 
 The container names are derived from `cluster.name` and
