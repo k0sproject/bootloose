@@ -10,7 +10,7 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-20.04
     outputs:
-      matrix: ${{ steps.list-arch.outputs.matrix_image_platforms }}
+      images: ${{ steps.list-images.outputs.images }}
       tag: ${{ steps.tag-name.outputs.tag }}
     steps:
     - name: Checkout code
@@ -20,22 +20,31 @@ jobs:
       id: tag-name
       run: echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
       
-    - name: List images and architecture support
-      id: list-arch
+    - name: List images
+      id: list-images
       run: |
-        echo "matrix_image_platforms=$(./image-platform-matrix-json.sh)" >> $GITHUB_OUTPUT
+        image_dirs=$(find images -name 'Dockerfile' -exec dirname {} \; | xargs -n 1 basename)
+        image_dirs_json=$(echo "$image_dirs" | jq -R -s -c 'split("\n")[:-1]')
+        echo "images=${image_dirs_json}" >> $GITHUB_OUTPUT
 
   publish_images:
     if: startsWith(github.ref, 'refs/tags/')
     needs: prepare
     runs-on: ubuntu-20.04
     strategy:
-      matrix: ${{fromJson(needs.prepare.outputs.matrix)}}
+      matrix: 
+        image: ${{fromJson(needs.prepare.outputs.images)}}
       fail-fast: false
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+
+    - name: List platforms
+      id: list-platforms
+      run: |
+        platforms=$(./image-platform-matrix-json.sh "${{ matrix.image }}")
+        echo "platforms=${platforms}" >> $GITHUB_OUTPUT
     
     - name: Login to Quay
       uses: docker/login-action@v2
@@ -56,7 +65,7 @@ jobs:
     - name: Build ${{ matrix.image }}
       uses: docker/build-push-action@v5
       with:
-        platforms: ${{ matrix.platforms }}
+        platforms: ${{ fromJson(steps.list-platforms.platforms }}
         load: true
         push: true
         tags: |
@@ -74,7 +83,6 @@ jobs:
     
   publish_binaries:
     if: startsWith(github.ref, 'refs/tags/')
-    name: release
     needs: prepare
     runs-on: ubuntu-20.04
     steps:
@@ -98,7 +106,7 @@ jobs:
           files: |
             bin/footloose-*
             bin/sha256sums.txt
-          body_path: bin/checksums.md
+          body_path: bin/sha256sums.md
           tag_name: ${{ needs.prepare.outputs.tag }}
           name: ${{ needs.prepare.outputs.tag }}
           draft: true # So we can manually edit before publishing

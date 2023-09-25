@@ -1,5 +1,12 @@
 #!/bin/bash
 
+image_name="$1"
+
+if [ -z "$image_name" ]; then
+  echo "Usage: $0 <image_name>"
+  exit 1
+fi
+
 # Builds a JSON matrix of all Docker images and their supported platforms
 # for to be used in the GitHub Actions workflow matrix
 
@@ -21,28 +28,18 @@ fetch_platforms() {
 
 
 items=""
-first_image=true
-for dockerfile in images/**/Dockerfile; do
-  image_name=$(basename $(dirname $dockerfile))
-  upstream_image=$(grep -m 1 'FROM' $dockerfile | cut -d ' ' -f2)
-  platforms=$(fetch_platforms $upstream_image)
+upstream_image=$(grep -m 1 'FROM' "images/${image_name}/Dockerfile" | cut -d ' ' -f2)
+platforms=$(fetch_platforms $upstream_image)
 
-  if [ "$first_image" = true ]; then
-    first_image=false
+first_platform=true
+
+for platform in $platforms; do
+  if [ "$first_platform" = true ]; then
+    first_platform=false
   else
-    items+=","
-  fi  
-  items+="{\"image\": \"$image_name\",\"platforms\":["
-  first_platform=true
-  for platform in $platforms; do
-    if [ "$first_platform" = true ]; then
-      first_platform=false
-    else
-      items+=","
-    fi
-    items+="\"$platform\""
-  done
-  items+="]}"
+    json+=","
+  fi
+  json+="\"$platform\""
 done
 
-echo "[$items]"
+echo "[${json}]"
