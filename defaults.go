@@ -14,7 +14,7 @@ var defaultConfig = config.Config{
 		Count: 1,
 		Spec: config.Machine{
 			Name:  "node%d",
-			Image: "centos7", // TODO use a k0sproject hosted image
+			Image: "quay.io/k0sproject/footloose-ubuntu20.04",
 			PortMappings: []config.PortMapping{{
 				ContainerPort: 22,
 			}},
