@@ -8,7 +8,7 @@ For instance, if we want the created machines to run `fedora29` with the
 `htop` package already pre-installed:
 
 ```Dockerfile
-FROM quay.io/footloose/fedora29
+FROM quay.io/k0sproject/footloose-fedora39
 
 # Pre-seed the htop package
 RUN dnf -y install htop && dnf clean all
@@ -18,7 +18,7 @@ RUN dnf -y install htop && dnf clean all
 Build that image:
 
 ```console
-docker build -t fedora29-htop .
+docker build -t fedora39-htop .
 ```
 
 Configure `footloose.yaml` to use that image by either editing the file or running:

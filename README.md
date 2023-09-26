@@ -78,8 +78,8 @@ $ footloose ssh root@node1
 ## Choosing the OS image to run
 
 `footloose` will default to running an Ubuntu LTS container image. The `--image`
-argument of `config create` can be used to configure the OS image. Valid OS
-images are:
+argument of `config create` can be used to configure the OS image. OS
+images provided by this repository are:
 
 - `quay.io/k0sproject/footloose-alpine3.18`
 - `quay.io/k0sproject/footloose-amazonlinux2023`
@@ -93,17 +93,22 @@ images are:
 - `quay.io/k0sproject/footloose-ubuntu20.04`
 - `quay.io/k0sproject/footloose-ubuntu22.04`
 
+The tag `:latest` is updated when any of the images are changed in the repository.
+When footloose CLI binary releases are published, images at that point are tagged
+with a version that you can pin a config to, such as
+`quay.io/k0sproject/footloose-ubuntu20.04:v0.7.0`.
+
 For example:
 
 ```console
 footloose config create --replicas 3 --image quay.io/k0sproject/footloose-debian12
 ```
 
-Some images need the `--privileged` flag:
-
 ```console
-footloose config create --replicas 1 --image quay.io/k0sproject/footloose-ubuntu18.04 --privileged
+footloose config create --replicas 3 --image quay.io/k0sproject/footloose-debian12:v0.7.0
 ```
+
+Some images may need the `--privileged` flag.
 
 ## `footloose.yaml`
 

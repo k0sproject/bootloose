@@ -88,7 +88,7 @@ func TestCreateDeleteMachine(t *testing.T) {
 
 	err = env.client.CreateMachine("testcluster", &config.Machine{
 		Name:  "testmachine",
-		Image: "quay.io/footloose/centos7:latest", // TODO use a k0sproject hosted image
+		Image: "quay.io/k0sproject/footloose-ubuntu20.04:latest",
 		PortMappings: []config.PortMapping{
 			{ContainerPort: 22},
 		},
