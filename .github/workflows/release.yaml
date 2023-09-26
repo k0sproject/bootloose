@@ -10,7 +10,6 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-20.04
     outputs:
-      images: ${{ steps.list-images.outputs.images }}
       tag: ${{ steps.tag-name.outputs.tag }}
     steps:
     - name: Checkout code
@@ -19,64 +18,6 @@ jobs:
     - name: Tag name
       id: tag-name
       run: echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
-      
-    - name: List images
-      id: list-images
-      run: |
-        image_dirs=$(find images -name 'Dockerfile' -exec dirname {} \; | xargs -n 1 basename)
-        image_dirs_json=$(echo "$image_dirs" | jq -R -s -c 'split("\n")[:-1]')
-        echo "images=${image_dirs_json}}" >> $GITHUB_OUTPUT
-
-  publish_images:
-    if: startsWith(github.ref, 'refs/tags/')
-    needs: prepare
-    runs-on: ubuntu-20.04
-    strategy:
-      matrix: 
-        image: ${{fromJson(needs.prepare.outputs.images)}}
-      fail-fast: false
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: List image platforms
-      id: list-platforms
-      run: |
-        platforms=$(make -s -C images "${{ matrix.image }}-platforms")
-        echo "platforms=${platforms}" >> $GITHUB_OUTPUT
-    
-    - name: Login to Quay
-      uses: docker/login-action@v3
-      with:
-        username: ${{ secrets.QUAY_USERNAME }}
-        password: ${{ secrets.QUAY_PASSWORD }}
-        registry: quay.io
-
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v2
-      with:
-        platforms: ${{ steps.list-platforms.outputs.platforms }}
-
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-
-    - name: Cache Buildx Docker layers
-      uses: actions/cache@v3
-      with:
-        path: /tmp/.buildx-cache
-        key: ${{ runner.os }}-buildx
-
-    - name: Build ${{ matrix.image }}
-      uses: docker/build-push-action@v5
-      with:
-        platforms: ${{ steps.list-platforms.outputs.platforms }}
-        push: true
-        tags: |
-          quay.io/k0sproject/footloose-${{ matrix.image }}:${{ needs.prepare.outputs.tag }}
-        context: images/${{ matrix.image }}
-        cache-from: type=local,src=/tmp/.buildx-cache
-        cache-to: type=local,dest=/tmp/.buildx-cache
     
   publish_binaries:
     if: startsWith(github.ref, 'refs/tags/')
