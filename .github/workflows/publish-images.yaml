@@ -44,20 +44,19 @@ jobs:
     - name: List all images
       if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/')
       run: |
-        image_dirs=$(find images -name 'Dockerfile' -exec dirname {} \; | xargs -n 1 basename)
+        image_dirs=$(find images -name 'Dockerfile' -exec dirname {} \; | xargs -n 1 basename | tr '\n' ' ')
         echo "image_dirs=$image_dirs" >> $GITHUB_ENV
 
     - name: List changed images
       if: github.event_name != 'workflow_dispatch' && !startsWith(github.ref, 'refs/tags/')
       run: |
-        git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep 'images/.*/Dockerfile' | awk -F/ '{print $(NF-1)}' > changed_images.txt
-        image_dirs=$(cat changed_images.txt | tr '\n' ' ' | sed 's/ $//')
+        image_dirs=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep 'images/.*/Dockerfile' | awk -F/ '{print $(NF-1)} | tr '\n' ' ' | sed 's/ $//')
         echo "image_dirs=$image_dirs" >> $GITHUB_ENV
 
     - name: Set image list
       id: set-images
       run: |
-        image_dirs_json=$(echo "$image_dirs" | jq -R -s -c 'split(" ")[:-1]')
+        image_dirs_json=$(echo "$image_dirs" | jq -R -c 'split(" ") | map(select(. != ""))')
         echo "images=${image_dirs_json}}" >> $GITHUB_OUTPUT
 
   publish_images:
