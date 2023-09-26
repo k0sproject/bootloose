@@ -15,7 +15,7 @@ cluster:
 machines:
 - count: 1
   spec:
-    image: quay.io/footloose/centos7
+    image: quay.io/k0sproject/footloose-debian12
     name: node%d
     portMappings:
     - containerPort: 22

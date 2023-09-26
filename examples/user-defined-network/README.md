@@ -13,7 +13,7 @@ cluster:
 machines:
 - count: 3
   spec:
-    image: quay.io/footloose/centos7:0.6.4
+    image: quay.io/k0sproject/footloose-debian12:latest
     name: node%d
     networks:
     - footloose-cluster
@@ -32,7 +32,7 @@ Now you can deploy your cluster:
 
 ```console
 $ footloose create
-INFO[0000] Image: quay.io/footloose/centos7 present locally
+INFO[0000] Image: quay.io/k0sproject/footloose-debian12 present locally
 INFO[0000] Creating machine: cluster-node0 ...
 INFO[0001] Creating machine: cluster-node1 ...
 INFO[0002] Creating machine: cluster-node2 ...
