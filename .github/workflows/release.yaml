@@ -40,11 +40,10 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: List image architectures
-      id: list-arch
+    - name: List image platforms
+      id: list-platforms
       run: |
-        archs=$(make -C images ${{ matrix.image }}-arch) 
-        echo "archs=${archs}" >> $GITHUB_OUTPUT
+        echo "platforms=$(make -C images "${{ matrix.image }}-platforms")" >> $GITHUB_OUTPUT
     
     - name: Login to Quay
       uses: docker/login-action@v3
@@ -65,7 +64,7 @@ jobs:
     - name: Build ${{ matrix.image }}
       uses: docker/build-push-action@v5
       with:
-        platforms: ${{ steps.list-arch.archs }}
+        platforms: ${{ steps.list-platforms.platforms }}
         load: true
         push: true
         tags: |

@@ -17,7 +17,7 @@ list:
 clean:
 	@rm -f $(STAMPS)
 
-%-arch:
-	@./list-image-arch.sh $(@:-arch=)
+%-platforms:
+	@./list-image-platforms.sh $(@:-platforms=)
 
-.PHONY: all list clean %-arch
+.PHONY: all list clean %-platforms

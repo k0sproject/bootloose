@@ -21,25 +21,11 @@ fetch_platforms() {
 
   url="https://hub.docker.com/v2/repositories/$repo/tags/$tag/?page_size=20"
 
+  # outputs linux/arm64,linux/amd64,linux/arm/v7
   curl -s "$url" \
-    | jq -r '.images[] | select(.os=="linux" and (.architecture | test("amd64|arm64|arm"))) | .architecture' \
-    | sort | uniq
-  }
+    | jq -r '[.images[] | select(.os=="linux" and (.architecture | test("amd64|arm64|arm"))) | "\(.os)/\(.architecture)\(if .variant then "/" + .variant else "" end)"] | join(",")'
+}
 
 
-items=""
 upstream_image=$(grep -m 1 'FROM' "${image_name}/Dockerfile" | cut -d ' ' -f2)
-platforms=$(fetch_platforms $upstream_image)
-
-first_platform=true
-
-for platform in $platforms; do
-  if [ "$first_platform" = true ]; then
-    first_platform=false
-  else
-    list+=","
-  fi
-  list+="$platform"
-done
-
-echo "${list}"
+fetch_platforms "$upstream_image"
