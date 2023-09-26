@@ -43,7 +43,7 @@ jobs:
     - name: List image platforms
       id: list-platforms
       run: |
-        platforms=$(make -C images "${{ matrix.image }}-platforms" | tr -d '\n')
+        platforms=$(make -s -C images "${{ matrix.image }}-platforms")
         echo "platforms=${platforms}" >> $GITHUB_OUTPUT
     
     - name: Login to Quay
