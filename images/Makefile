@@ -6,19 +6,18 @@ STAMPS := $(addsuffix /.stamp, $(IMAGES))
 
 all: $(STAMPS)
 
-# generate rules
 $(foreach img, $(IMAGES), $(eval $(img)/.stamp: $(img)/Dockerfile; docker build -t $(img) $(img); touch $(img)/.stamp))
 
-# Default target
 all: $(STAMPS)
 
 # List available images
 list:
 	@echo $(IMAGES)
 
-# Clean up
 clean:
 	@rm -f $(STAMPS)
 
-# Phony targets
-.PHONY: all list clean
+%-arch:
+	@./list-image-arch.sh $(@:-arch=)
+
+.PHONY: all list clean %-arch

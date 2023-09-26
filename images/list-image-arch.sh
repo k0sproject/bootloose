@@ -7,8 +7,8 @@ if [ -z "$image_name" ]; then
   exit 1
 fi
 
-# Builds a JSON matrix of all Docker images and their supported platforms
-# for to be used in the GitHub Actions workflow matrix
+# Builds a CSV list of machine image's upstream container's available platforms.
+# To be used for GitHub release workflow matrix.
 
 fetch_platforms() {
   image=$1
@@ -28,7 +28,7 @@ fetch_platforms() {
 
 
 items=""
-upstream_image=$(grep -m 1 'FROM' "images/${image_name}/Dockerfile" | cut -d ' ' -f2)
+upstream_image=$(grep -m 1 'FROM' "${image_name}/Dockerfile" | cut -d ' ' -f2)
 platforms=$(fetch_platforms $upstream_image)
 
 first_platform=true
@@ -37,9 +37,9 @@ for platform in $platforms; do
   if [ "$first_platform" = true ]; then
     first_platform=false
   else
-    json+=","
+    list+=","
   fi
-  json+="\"$platform\""
+  list+="$platform"
 done
 
-echo "[${json}]"
+echo "${list}"

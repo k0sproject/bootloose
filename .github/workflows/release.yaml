@@ -25,7 +25,7 @@ jobs:
       run: |
         image_dirs=$(find images -name 'Dockerfile' -exec dirname {} \; | xargs -n 1 basename)
         image_dirs_json=$(echo "$image_dirs" | jq -R -s -c 'split("\n")[:-1]')
-        echo "images=${image_dirs_json}" >> $GITHUB_OUTPUT
+        echo "images=${image_dirs_json}}" >> $GITHUB_OUTPUT
 
   publish_images:
     if: startsWith(github.ref, 'refs/tags/')
@@ -40,11 +40,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: List platforms
-      id: list-platforms
+    - name: List image architectures
+      id: list-arch
       run: |
-        platforms=$(./image-platform-matrix-json.sh "${{ matrix.image }}")
-        echo "platforms=${platforms}" >> $GITHUB_OUTPUT
+        archs=$(make -C images ${{ matrix.image }}-arch) 
+        echo "archs=${archs}" >> $GITHUB_OUTPUT
     
     - name: Login to Quay
       uses: docker/login-action@v2
@@ -65,7 +65,7 @@ jobs:
     - name: Build ${{ matrix.image }}
       uses: docker/build-push-action@v5
       with:
-        platforms: ${{ fromJson(steps.list-platforms.platforms) }}
+        platforms: ${{ fromJson(steps.list-arch.archs) }}
         load: true
         push: true
         tags: |
