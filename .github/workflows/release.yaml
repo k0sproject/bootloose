@@ -66,20 +66,12 @@ jobs:
       uses: docker/build-push-action@v5
       with:
         platforms: ${{ steps.list-platforms.platforms }}
-        load: true
         push: true
         tags: |
-          quay.io/k0sproject/footloose-${{ matrix.image }}:latest
           quay.io/k0sproject/footloose-${{ matrix.image }}:${{ needs.prepare.outputs.tag }}
         context: images/${{ matrix.image }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache
-
-    - name: Tag and Push :latest (skipped for prereleases)
-      if: ${{ !contains(needs.prepare.outputs.tag, '-') }}
-      run: |
-        docker tag quay.io/k0sproject/footloose-${{ matrix.image }}:${{ needs.prepare.outputs.tag }} quay.io/k0sproject/footloose-${{ matrix.image }}:latest
-        docker push quay.io/k0sproject/footloose-${{ matrix.image }}:latest
     
   publish_binaries:
     if: startsWith(github.ref, 'refs/tags/')
