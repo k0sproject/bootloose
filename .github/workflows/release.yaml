@@ -65,7 +65,7 @@ jobs:
     - name: Build ${{ matrix.image }}
       uses: docker/build-push-action@v5
       with:
-        platforms: ${{ fromJson(steps.list-arch.archs) }}
+        platforms: ${{ steps.list-arch.archs }}
         load: true
         push: true
         tags: |
