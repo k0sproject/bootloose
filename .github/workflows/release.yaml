@@ -49,7 +49,7 @@ jobs:
     - name: Login to Quay
       uses: docker/login-action@v2
       with:
-        username: ${{ secrets.QUAY_USER }}
+        username: ${{ secrets.QUAY_USERNAME }}
         password: ${{ secrets.QUAY_PASSWORD }}
         registry: quay.io
 
@@ -75,7 +75,7 @@ jobs:
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache
 
-    - name: Tag and Push :latest
+    - name: Tag and Push :latest (skipped for prereleases)
       if: ${{ !contains(needs.prepare.outputs.tag, '-') }}
       run: |
         docker tag quay.io/k0sproject/footloose-${{ matrix.image }}:${{ needs.prepare.outputs.tag }} quay.io/k0sproject/footloose-${{ matrix.image }}:latest
