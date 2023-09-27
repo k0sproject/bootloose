@@ -1,9 +1,9 @@
 # This test creates a cluster and then deletes it
 
-footloose config create --override --config %testName.footloose --name %testName --key %testName-key --image %image
-%defer rm -f %testName.footloose %testName-key %testName-key.pub
-%defer footloose delete --config %testName.footloose
-footloose create --config %testName.footloose
-%out docker ps --format {{.Names}} -f label=io.k0sproject.footloose.cluster=%testName
-footloose delete --config %testName.footloose
-%out docker ps --format {{.Names}} -f label=io.k0sproject.footloose.cluster=%testName
+bootloose config create --override --config %testName.bootloose --name %testName --key %testName-key --image %image
+%defer rm -f %testName.bootloose %testName-key %testName-key.pub
+%defer bootloose delete --config %testName.bootloose
+bootloose create --config %testName.bootloose
+%out docker ps --format {{.Names}} -f label=io.k0sproject.bootloose.cluster=%testName
+bootloose delete --config %testName.bootloose
+%out docker ps --format {{.Names}} -f label=io.k0sproject.bootloose.cluster=%testName

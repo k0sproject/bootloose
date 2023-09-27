@@ -10,5 +10,5 @@ var configCmd = &cobra.Command{
 }
 
 func init() {
-	footloose.AddCommand(configCmd)
+	bootloose.AddCommand(configCmd)
 }

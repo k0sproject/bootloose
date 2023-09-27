@@ -19,7 +19,7 @@ package docker
 import (
 	"strings"
 
-	"github.com/k0sproject/footloose/pkg/exec"
+	"github.com/k0sproject/bootloose/pkg/exec"
 )
 
 // UsernsRemap checks if userns-remap is enabled in dockerd

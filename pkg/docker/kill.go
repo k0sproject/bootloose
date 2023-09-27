@@ -17,7 +17,7 @@ limitations under the License.
 package docker
 
 import (
-	"github.com/k0sproject/footloose/pkg/exec"
+	"github.com/k0sproject/bootloose/pkg/exec"
 )
 
 // Kill sends the named signal to the container

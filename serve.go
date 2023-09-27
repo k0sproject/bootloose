@@ -9,13 +9,13 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-	"github.com/k0sproject/footloose/pkg/api"
-	"github.com/k0sproject/footloose/pkg/cluster"
+	"github.com/k0sproject/bootloose/pkg/api"
+	"github.com/k0sproject/bootloose/pkg/cluster"
 )
 
 var serveCmd = &cobra.Command{
 	Use:   "serve",
-	Short: "Launch a footloose server",
+	Short: "Launch a bootloose server",
 	RunE:  serve,
 }
 
@@ -40,7 +40,7 @@ func init() {
 	serveCmd.Flags().StringVarP(&serveOptions.listen, "listen", "l", ":2444", "Cluster configuration file")
 	serveCmd.Flags().StringVar(&serveOptions.keyStorePath, "keystore-path", defaultKeyStorePath, "Path of the public keys store")
 	serveCmd.Flags().BoolVar(&serveOptions.debug, "debug", false, "Enable debug")
-	footloose.AddCommand(serveCmd)
+	bootloose.AddCommand(serveCmd)
 }
 
 func serve(cmd *cobra.Command, args []string) error {

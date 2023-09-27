@@ -6,8 +6,8 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/k0sproject/footloose/pkg/docker"
-	"github.com/k0sproject/footloose/pkg/exec"
+	"github.com/k0sproject/bootloose/pkg/docker"
+	"github.com/k0sproject/bootloose/pkg/exec"
 )
 
 // run runs a command. It will output the combined stdout/error on failure.

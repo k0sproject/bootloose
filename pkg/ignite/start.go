@@ -1,7 +1,7 @@
 package ignite
 
 import (
-	"github.com/k0sproject/footloose/pkg/exec"
+	"github.com/k0sproject/bootloose/pkg/exec"
 )
 
 // Start starts an Ignite VM

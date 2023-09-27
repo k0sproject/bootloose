@@ -244,7 +244,7 @@ replaceOuter:
 		case "%error":
 			t.shouldFail = true
 			parts = parts[1:]
-		case "footloose":
+		case "bootloose":
 			parts = append(goRun, parts[1:]...)
 		default:
 			break replaceOuter

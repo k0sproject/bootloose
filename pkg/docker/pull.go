@@ -22,7 +22,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/k0sproject/footloose/pkg/exec"
+	"github.com/k0sproject/bootloose/pkg/exec"
 )
 
 // PullIfNotPresent will pull an image if it is not present locally

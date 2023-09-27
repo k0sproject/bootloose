@@ -104,7 +104,7 @@ jobs:
         platforms: ${{ steps.list-platforms.outputs.platforms }}
         push: true
         tags: |
-          quay.io/k0sproject/footloose-${{ matrix.image }}:${{ needs.prepare.outputs.tag }}
+          quay.io/k0sproject/bootloose-${{ matrix.image }}:${{ needs.prepare.outputs.tag }}
         context: images/${{ matrix.image }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache

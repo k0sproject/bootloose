@@ -13,10 +13,10 @@ import (
 
 	"github.com/docker/docker/api/types"
 	"github.com/ghodss/yaml"
-	"github.com/k0sproject/footloose/pkg/config"
-	"github.com/k0sproject/footloose/pkg/docker"
-	"github.com/k0sproject/footloose/pkg/exec"
-	"github.com/k0sproject/footloose/pkg/ignite"
+	"github.com/k0sproject/bootloose/pkg/config"
+	"github.com/k0sproject/bootloose/pkg/docker"
+	"github.com/k0sproject/bootloose/pkg/exec"
+	"github.com/k0sproject/bootloose/pkg/ignite"
 	"github.com/mitchellh/go-homedir"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
@@ -171,7 +171,7 @@ func (c *Cluster) ensureSSHKey() error {
 		"ssh-keygen", "-q",
 		"-t", "rsa",
 		"-b", "4096",
-		"-C", f("%s@footloose.mail", c.spec.Cluster.Name),
+		"-C", f("%s@bootloose.mail", c.spec.Cluster.Name),
 		"-f", path,
 		"-N", "",
 	)
@@ -288,8 +288,8 @@ func (c *Cluster) CreateMachine(machine *Machine, i int) error {
 func (c *Cluster) createMachineRunArgs(machine *Machine, name string, i int) []string {
 	runArgs := []string{
 		"-it",
-		"--label", "io.k0sproject.footloose.owner=footloose",
-		"--label", "io.k0sproject.footloose.cluster=" + c.spec.Cluster.Name,
+		"--label", "io.k0sproject.bootloose.owner=bootloose",
+		"--label", "io.k0sproject.bootloose.cluster=" + c.spec.Cluster.Name,
 		"--name", name,
 		"--hostname", machine.Hostname(),
 		"--tmpfs", "/run",
@@ -442,7 +442,7 @@ func (c *Cluster) machineFilering(machines []*Machine, hostnames []string) []*Ma
 }
 
 func (c *Cluster) gatherMachines() (machines []*Machine, err error) {
-	// Footloose has no machines running. Falling back to display
+	// Bootloose has no machines running. Falling back to display
 	// cluster related data.
 	machines = c.gatherMachinesByCluster()
 	for _, m := range machines {

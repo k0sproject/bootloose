@@ -1,6 +1,6 @@
-# Run Apache with Footloose
+# Run Apache with Bootloose
 
-Using the footloose base like above, create a docker file which installs Apache and
+Using the bootloose base like above, create a docker file which installs Apache and
 exposes a port like 80 or 443:
 
 ```Dockerfile
@@ -20,16 +20,16 @@ Build that image:
 $ docker built -t apache:test01 .
 ```
 
-Create a footloose configuration file.
+Create a bootloose configuration file.
 
 ```console
-$ footloose config create --image apache:test01
+$ bootloose config create --image apache:test01
 ```
 
 Now, create a machine!
 
 ```console
-$ footloose create
+$ bootloose create
 ```
 
 Once the machine is ready, you should be able to access apache on the exposed port.
@@ -40,9 +40,9 @@ $ docker port cluster-node0 80
 $ curl 0.0.0.0:32824
 <!DOCTYPE html>
 <html>
-    <title>Footloose</title>
+    <title>Bootloose</title>
     <body>
-        Hello, from footloose!
+        Hello, from bootloose!
     </body>
 </html>
 ```

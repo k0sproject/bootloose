@@ -1,8 +1,8 @@
-/footloose.yaml
+/bootloose.yaml
 /pkg/client/testcluster-key
 /pkg/client/testcluster-key.pub
 /vendor
 cluster-key
 cluster-key.pub
-footloose
+bootloose
 /bin

@@ -7,7 +7,7 @@ import (
 	"reflect"
 
 	"github.com/spf13/cobra"
-	"github.com/k0sproject/footloose/pkg/config"
+	"github.com/k0sproject/bootloose/pkg/config"
 )
 
 var getConfigCmd = &cobra.Command{
@@ -21,7 +21,7 @@ var getOptions struct {
 }
 
 func init() {
-	getConfigCmd.Flags().StringVarP(&getOptions.config, "config", "c", Footloose, "Cluster configuration file")
+	getConfigCmd.Flags().StringVarP(&getOptions.config, "config", "c", Bootloose, "Cluster configuration file")
 	configCmd.AddCommand(getConfigCmd)
 }
 

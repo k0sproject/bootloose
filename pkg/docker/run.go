@@ -24,7 +24,7 @@ import (
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 
-	"github.com/k0sproject/footloose/pkg/exec"
+	"github.com/k0sproject/bootloose/pkg/exec"
 )
 
 // Docker container IDs are hex, more than one character, and on their own line

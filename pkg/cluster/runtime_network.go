@@ -4,7 +4,7 @@ import (
 	"net"
 
 	"github.com/docker/docker/api/types/network"
-	"github.com/k0sproject/footloose/pkg/ignite"
+	"github.com/k0sproject/bootloose/pkg/ignite"
 )
 
 const (

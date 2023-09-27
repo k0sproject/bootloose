@@ -15,7 +15,7 @@
 
   - name: Insert Index Page
     copy:
-      content: "welcome to footloose nginx ansible example"
+      content: "welcome to bootloose nginx ansible example"
       dest: /usr/share/nginx/html/index.html
 
   - name: Start NGiNX

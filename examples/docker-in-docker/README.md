@@ -15,7 +15,7 @@ cluster:
 machines:
 - count: 1
   spec:
-    image: quay.io/k0sproject/footloose-debian12
+    image: quay.io/k0sproject/bootloose-debian12
     name: node%d
     portMappings:
     - containerPort: 22
@@ -28,8 +28,8 @@ machines:
 You can then install and run docker on the machine:
 
 ```console
-$ footloose create
-$ footloose ssh root@node0
+$ bootloose create
+$ bootloose ssh root@node0
 # yum install -y docker iptables
 [...]
 # systemctl start docker

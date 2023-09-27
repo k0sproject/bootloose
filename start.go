@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/k0sproject/footloose/pkg/cluster"
+	"github.com/k0sproject/bootloose/pkg/cluster"
 )
 
 var startCmd = &cobra.Command{
@@ -17,8 +17,8 @@ var startOptions struct {
 }
 
 func init() {
-	startCmd.Flags().StringVarP(&startOptions.config, "config", "c", Footloose, "Cluster configuration file")
-	footloose.AddCommand(startCmd)
+	startCmd.Flags().StringVarP(&startOptions.config, "config", "c", Bootloose, "Cluster configuration file")
+	bootloose.AddCommand(startCmd)
 }
 
 func start(cmd *cobra.Command, args []string) error {

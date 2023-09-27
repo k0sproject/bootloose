@@ -1,6 +1,6 @@
 package main
 
-import "github.com/k0sproject/footloose/pkg/config"
+import "github.com/k0sproject/bootloose/pkg/config"
 
 // defaultKeyStore is the path where to store the public keys.
 const defaultKeyStorePath = "keys"
@@ -14,7 +14,7 @@ var defaultConfig = config.Config{
 		Count: 1,
 		Spec: config.Machine{
 			Name:  "node%d",
-			Image: "quay.io/k0sproject/footloose-ubuntu20.04",
+			Image: "quay.io/k0sproject/bootloose-ubuntu20.04",
 			PortMappings: []config.PortMapping{{
 				ContainerPort: 22,
 			}},

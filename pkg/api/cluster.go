@@ -7,8 +7,8 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
-	"github.com/k0sproject/footloose/pkg/cluster"
-	"github.com/k0sproject/footloose/pkg/config"
+	"github.com/k0sproject/bootloose/pkg/cluster"
+	"github.com/k0sproject/bootloose/pkg/config"
 )
 
 // ClusterURI returns the URI identifying a cluster in the REST API.

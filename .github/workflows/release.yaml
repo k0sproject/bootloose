@@ -42,7 +42,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            bin/footloose-*
+            bin/bootloose-*
             bin/sha256sums.txt
           body_path: bin/sha256sums.md
           tag_name: ${{ needs.prepare.outputs.tag }}

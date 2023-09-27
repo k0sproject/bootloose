@@ -7,6 +7,6 @@ machines:
     image: centos7:latest
     name: node%d
     networks:
-    - footloose-cluster
+    - bootloose-cluster
     portMappings:
     - containerPort: 22

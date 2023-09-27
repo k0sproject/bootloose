@@ -6,7 +6,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/k0sproject/footloose/pkg/cluster"
+	"github.com/k0sproject/bootloose/pkg/cluster"
 )
 
 var configCreateCmd = &cobra.Command{
@@ -21,7 +21,7 @@ var configCreateOptions struct {
 }
 
 func init() {
-	configCreateCmd.Flags().StringVarP(&configCreateOptions.file, "config", "c", Footloose, "Cluster configuration file")
+	configCreateCmd.Flags().StringVarP(&configCreateOptions.file, "config", "c", Bootloose, "Cluster configuration file")
 	configCreateCmd.Flags().BoolVar(&configCreateOptions.override, "override", false, "Override configuration file if it exists")
 
 	name := &defaultConfig.Cluster.Name

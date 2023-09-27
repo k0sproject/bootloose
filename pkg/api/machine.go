@@ -7,8 +7,8 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
-	"github.com/k0sproject/footloose/pkg/cluster"
-	"github.com/k0sproject/footloose/pkg/config"
+	"github.com/k0sproject/bootloose/pkg/cluster"
+	"github.com/k0sproject/bootloose/pkg/config"
 )
 
 // MachineURI returns the URI identifying a machine in the REST API.

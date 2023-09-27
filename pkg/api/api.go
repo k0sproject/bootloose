@@ -7,10 +7,10 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/gorilla/mux"
-	"github.com/k0sproject/footloose/pkg/cluster"
+	"github.com/k0sproject/bootloose/pkg/cluster"
 )
 
-// API represents the footloose REST API.
+// API represents the bootloose REST API.
 type API struct {
 	BaseURI  string
 	db       db
@@ -18,7 +18,7 @@ type API struct {
 	router   *mux.Router
 }
 
-// New creates a new object able to answer footloose REST API.
+// New creates a new object able to answer bootloose REST API.
 func New(baseURI string, keyStore *cluster.KeyStore, debug bool) *API {
 	if debug {
 		log.SetLevel(log.DebugLevel)

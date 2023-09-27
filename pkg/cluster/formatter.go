@@ -7,7 +7,7 @@ import (
 	"strings"
 	"text/tabwriter"
 
-	"github.com/k0sproject/footloose/pkg/config"
+	"github.com/k0sproject/bootloose/pkg/config"
 )
 
 // Formatter formats a slice of machines and outputs the result

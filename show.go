@@ -5,14 +5,14 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	"github.com/k0sproject/footloose/pkg/cluster"
+	"github.com/k0sproject/bootloose/pkg/cluster"
 )
 
 var showCmd = &cobra.Command{
 	Use:     "show [HOSTNAME]",
 	Aliases: []string{"status"},
 	Short:   "Show all running machines or a single machine with a given hostname.",
-	Long: `Provides information about machines created by footloose in JSON or Table format.
+	Long: `Provides information about machines created by bootloose in JSON or Table format.
 Optionally, provide show with a hostname to look for a specific machine. Exp: 'show node0'.`,
 	RunE: show,
 	Args: cobra.MaximumNArgs(1),
@@ -24,9 +24,9 @@ var showOptions struct {
 }
 
 func init() {
-	showCmd.Flags().StringVarP(&showOptions.config, "config", "c", Footloose, "Cluster configuration file")
+	showCmd.Flags().StringVarP(&showOptions.config, "config", "c", Bootloose, "Cluster configuration file")
 	showCmd.Flags().StringVarP(&showOptions.output, "output", "o", "table", "Output formatting options: {json,table}.")
-	footloose.AddCommand(showCmd)
+	bootloose.AddCommand(showCmd)
 }
 
 // show will show all machines in a given cluster.

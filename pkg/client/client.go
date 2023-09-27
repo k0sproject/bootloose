@@ -8,12 +8,12 @@ import (
 	"net/url"
 
 	"github.com/pkg/errors"
-	"github.com/k0sproject/footloose/pkg/api"
-	"github.com/k0sproject/footloose/pkg/cluster"
-	"github.com/k0sproject/footloose/pkg/config"
+	"github.com/k0sproject/bootloose/pkg/api"
+	"github.com/k0sproject/bootloose/pkg/cluster"
+	"github.com/k0sproject/bootloose/pkg/config"
 )
 
-// Client is a object able to talk a remote footloose API server.
+// Client is a object able to talk a remote bootloose API server.
 type Client struct {
 	baseURI *url.URL
 	client  *http.Client
