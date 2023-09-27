@@ -1,6 +1,6 @@
 # Test that cluster start / stop works
 
-footloose config create --override --config %testName.footloose --name %testName --key %testName-key --image %image
+footloose config create --override --config %testName.footloose --name %testName --key %testName-key --privileged --image %image
 
 %defer rm -f %testName.footloose %testName-key %testName-key.pub
 %defer footloose delete --config %testName.footloose

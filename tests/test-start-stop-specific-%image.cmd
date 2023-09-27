@@ -1,6 +1,6 @@
 # Test start/stop specific node in cluster
 
-footloose config create --override --config %testName.footloose --name %testName --key %testName-key --image %image --replicas 3
+footloose config create --override --config %testName.footloose --name %testName --key %testName-key --privileged --image %image --replicas 3
 %defer rm -f %testName.footloose %testName-key %testName-key.pub
 %defer footloose delete --config %testName.footloose
 
