@@ -1,8 +1,10 @@
-/bootloose.yaml
-/pkg/client/testcluster-key
-/pkg/client/testcluster-key.pub
-/vendor
-cluster-key
-cluster-key.pub
 bootloose
+bootloose.exe
 /bin
+/vendor
+*.pub
+*-key
+*.bootloose
+*.test
+*.out
+go.work
