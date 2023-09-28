@@ -15,8 +15,7 @@ BIN_PREFIX := bootloose-
 all: bootloose
 
 bootloose:
-	go build -v -o bin/bootloose .
-	go build -v $(BUILD_FLAGS) -o bin/bootloose .
+	go build -v $(BUILD_FLAGS) -o bootloose .
 
 PLATFORMS := linux-amd64 linux-arm64 linux-arm darwin-amd64 darwin-arm64
 bins := $(foreach platform, $(PLATFORMS), bin/$(BIN_PREFIX)$(platform))
@@ -75,7 +74,7 @@ list-images:
 # Clean up all stamps and other generated files
 clean:
 	@$(MAKE) -C images clean
-	rm -f bootloose bin/
+	rm -f bootloose bin/*
 
 # Phony targets
 .PHONY: install images image-% test-unit test-e2e test-e2e-% list-images clean build-all
