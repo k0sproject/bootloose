@@ -1,4 +1,4 @@
-# Run Apache with Bootloose
+# Run Apache with bootloose
 
 Using the bootloose base like above, create a docker file which installs Apache and
 exposes a port like 80 or 443:
@@ -40,7 +40,7 @@ $ docker port cluster-node0 80
 $ curl 0.0.0.0:32824
 <!DOCTYPE html>
 <html>
-    <title>Bootloose</title>
+    <title>bootloose</title>
     <body>
         Hello, from bootloose!
     </body>
