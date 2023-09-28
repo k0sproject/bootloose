@@ -15,9 +15,21 @@ about it is: [Vagrant](https://www.vagrantup.com/), but with containers.
 
 `bootloose` in action:
 
-[![asciicast](https://asciinema.org/a/226185.svg)](https://asciinema.org/a/226185)
-
-[readme-did]: ./examples/docker-in-docker/README.md
+```console
+$ bootloose config create --replicas 3
+$ bootloose create
+INFO[0000] Pulling image: quay.io/k0sproject/bootloose-ubuntu20.04 ...
+INFO[0007] Creating machine: cluster-node0 ...
+INFO[0008] Creating machine: cluster-node1 ...
+INFO[0008] Creating machine: cluster-node2 ...
+$ docker ps
+CONTAINER ID    IMAGE                                     COMMAND         NAMES
+04c27967f76e    quay.io/k0sproject/bootloose-ubuntu20.04  "/sbin/init"    cluster-node2
+1665288855f6    quay.io/k0sproject/bootloose-ubuntu20.04  "/sbin/init"    cluster-node1
+5134f80b733e    quay.io/k0sproject/bootloose-ubuntu20.04  "/sbin/init"    cluster-node0
+$ bootloose ssh root@node1
+[root@1665288855f6 ~]# █
+```
 
 ## Attribution
 
