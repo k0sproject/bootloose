@@ -238,11 +238,10 @@ If you have any questions, feedback, or problems with `bootloose`:
 
 - Check out the [examples](examples).
 - [File an issue](https://github.com/k0sproject/bootloose/issues/new).
+- [Contact us](https://k0sproject.io/contact-us.html) via the form on the k0sproject website.
 
 bootloose follows the [CNCF Code of
 Conduct](https://github.com/cncf/foundation/blob/master/code-of-conduct.md).
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported by contacting a bootloose project maintainer, or Natanael Copa
-<ncopa@mirantis.com>
+reported by contacting a bootloose project maintainer.
 
-Your feedback is always welcome!
