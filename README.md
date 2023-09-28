@@ -19,6 +19,11 @@ about it is: [Vagrant](https://www.vagrantup.com/), but with containers.
 
 [readme-did]: ./examples/docker-in-docker/README.md
 
+## Attribution
+
+This project is a continuation of [Footloose](https://github.com/weaveworks/footloose) by Weaveworks. 
+We are grateful for their work and contributions from the community.
+
 ## Install
 
 ### From source
