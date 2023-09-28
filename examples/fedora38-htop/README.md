@@ -4,7 +4,7 @@ It is possible to create docker images that specialize a [`bootloose` base
 image](https://github.com/k0sproject/bootloose#choosing-the-os-image-to-run) to
 suit your needs.
 
-For instance, if we want the created machines to run `fedora29` with the
+For instance, if we want the created machines to run `fedora38` with the
 `htop` package already pre-installed:
 
 ```Dockerfile
@@ -24,7 +24,7 @@ docker build -t fedora39-htop .
 Configure `bootloose.yaml` to use that image by either editing the file or running:
 
 ```console
-bootloose config create --image fedora29-htop
+bootloose config create --image fedora38-htop
 ````
 
 `htop` will be available on the newly created machines!

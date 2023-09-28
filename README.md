@@ -160,7 +160,7 @@ available parameters are in [the reference documentation][pkg-config].
 
 Interesting things can be done with `bootloose`!
 
-- [Customize the OS image](./examples/fedora29-htop/README.md)
+- [Customize the OS image](./examples/fedora38-htop/README.md)
 - [Run Apache](./examples/apache/README.md)
 - [Specify which ports on the hosts should be bound to services](examples/simple-hostPort/README.md)
 - [Use Ansible to provision machines](./examples/ansible/README.md)

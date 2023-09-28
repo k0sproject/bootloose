@@ -10,7 +10,7 @@ limitation can be lifted once we can select `bootloose` containers better
 ([#17][issue-17]).
 - `bootloose` in the path.
 
-[issue-17]: https://github.com/weaveworks/bootloose/issues/17
+[issue-17]: https://github.com/weaveworks/footloose/issues/17
 
 ## Running the tests
 
@@ -40,7 +40,7 @@ subset of the tests with this:
 go test -v -run TestEndToEnd/test-create-delete
 ```
 
-This will match `test-create-delete-centos7`, `test-create-delete-fedora29`,
+This will match `test-create-delete-centos7`, `test-create-delete-fedora38`,
 ...
 
 To run tests for a specific image:
