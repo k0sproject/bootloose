@@ -1,3 +1,4 @@
+// SPDX-FileCopyrightText: 2019 Weaveworks Ltd.
 // SPDX-FileCopyrightText: 2023 bootloose authors
 // SPDX-License-Identifier: Apache-2.0
 
@@ -5,6 +6,7 @@ package main
 
 import (
 	"os"
+
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
