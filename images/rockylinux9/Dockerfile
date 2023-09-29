@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2023 bootloose authors
+# SPDX-License-Identifier: Apache-2.0
 FROM rockylinux:9
 
 ENV container docker

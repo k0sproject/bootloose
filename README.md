@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: 2019 Weaveworks Ltd.
+SPDX-FileCopyrightText: 2023 bootloose authors
+SPDX-License-Identifier: Apache-2.0
+-->
 [![Build status](https://github.com/k0sproject/bootloose/actions/workflows/go.yml)]
 [![Go Report Card](https://goreportcard.com/badge/github.com/k0sproject/bootloose)](https://goreportcard.com/report/github.com/k0sproject/bootloose)
 [![GoDoc](https://godoc.org/github.com/k0sproject/bootloose?status.svg)](https://godoc.org/github.com/k0sproject/bootloose)

@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: 2019 Weaveworks Ltd.
+SPDX-FileCopyrightText: 2023 bootloose authors
+SPDX-License-Identifier: Apache-2.0
+-->
 # End-to-end tests
 
 This directory holds `bootloose` end-to-end tests. All commands given in this

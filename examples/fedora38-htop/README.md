@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: 2019 Weaveworks Ltd.
+SPDX-FileCopyrightText: 2023 bootloose authors
+SPDX-License-Identifier: Apache-2.0
+-->
 # Customize the OS image
 
 It is possible to create docker images that specialize a [`bootloose` base

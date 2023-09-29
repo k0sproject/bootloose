@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: 2019 Weaveworks Ltd.
+SPDX-FileCopyrightText: 2023 bootloose authors
+SPDX-License-Identifier: Apache-2.0
+-->
 # Running `dockerd` in Container Machines
 
 To run `dockerd` inside a docker container, two things are needed:

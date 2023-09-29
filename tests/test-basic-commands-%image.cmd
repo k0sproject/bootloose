@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2019 Weaveworks Ltd.
+# SPDX-FileCopyrightText: 2023 bootloose authors
+# SPDX-License-Identifier: Apache-2.0
 # Test that common utilities are present in the base images
 
 bootloose config create --config %testName.bootloose --override --name %testName --key %testName-key --image %image

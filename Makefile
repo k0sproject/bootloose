@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2019 Weaveworks Ltd.
+# SPDX-FileCopyrightText: 2023 bootloose authors
+# SPDX-License-Identifier: Apache-2.0
 GO_SRCS := $(shell find . -type f -name '*.go' -a ! \( -name 'zz_generated*' -o -name '*_test.go' \))
 GO_TESTS := $(shell find . -type f -name '*_test.go')
 TAG_NAME = $(shell git describe --tags --abbrev=0 --exact-match 2>/dev/null)

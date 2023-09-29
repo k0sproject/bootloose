@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: 2019 Weaveworks Ltd.
+SPDX-FileCopyrightText: 2023 bootloose authors
+SPDX-License-Identifier: Apache-2.0
+-->
 # Simple port mapping example
 
 First prepare your deploy setup. Notice the last two lines, which means that

@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2019 Weaveworks Ltd.
+# SPDX-FileCopyrightText: 2023 bootloose authors
+# SPDX-License-Identifier: Apache-2.0
 FROM fedora:38
 
 ENV container docker

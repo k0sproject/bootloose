@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2023 bootloose authors
+# SPDX-License-Identifier: Apache-2.0
 # List of all images
 IMAGES := $(shell find . -mindepth 2 -maxdepth 2 -name Dockerfile -exec dirname {} \; | xargs -I {} basename {})
 

@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2019 Weaveworks Ltd.
+# SPDX-FileCopyrightText: 2023 bootloose authors
+# SPDX-License-Identifier: Apache-2.0
 # This test creates a cluster and then deletes it
 
 bootloose config create --override --config %testName.bootloose --name %testName --key %testName-key --image %image

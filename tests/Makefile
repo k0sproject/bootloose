@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2023 bootloose authors
+# SPDX-License-Identifier: Apache-2.0
 IMAGES := $(shell $(MAKE) -s -C ../images list)
 
 TEST_FILES := $(wildcard test-*.cmd)

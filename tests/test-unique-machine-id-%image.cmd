@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2023 bootloose authors
+# SPDX-License-Identifier: Apache-2.0
 # Test that machines get unique machine-ids
 
 bootloose config create --config %testName.bootloose --override --name %testName --key %testName-key --image %image
