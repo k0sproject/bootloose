@@ -2,17 +2,22 @@
 // SPDX-FileCopyrightText: 2023 bootloose authors
 // SPDX-License-Identifier: Apache-2.0
 
-package main
+package bootloose
 
 import (
 	"github.com/spf13/cobra"
 )
 
-var configCmd = &cobra.Command{
-	Use:   "config",
-	Short: "Manage cluster configuration",
-}
+func NewConfigCommand() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "config",
+		Short: "Manage cluster configuration",
+	}
 
-func init() {
-	bootloose.AddCommand(configCmd)
+	cmd.AddCommand(
+		NewConfigCreateCommand(),
+		NewConfigGetCommand(),
+	)
+
+	return cmd
 }

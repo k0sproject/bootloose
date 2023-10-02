@@ -75,3 +75,25 @@ func (conf Config) Validate() error {
 	}
 	return nil
 }
+
+func DefaultConfig() Config {
+	return Config{
+		Cluster: Cluster{
+			Name:       "cluster",
+			PrivateKey: "cluster-key",
+		},
+		Machines: []MachineReplicas{
+			{
+				Count: 1,
+				Spec: Machine{
+					Name:  "node%d",
+					Image: "quay.io/k0sproject/bootloose-ubuntu20.04",
+					PortMappings: []PortMapping{
+						{ContainerPort: 22},
+					},
+					Backend: "docker",
+				},
+			},
+		},
+	}
+}

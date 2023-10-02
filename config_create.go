@@ -2,54 +2,55 @@
 // SPDX-FileCopyrightText: 2023 bootloose authors
 // SPDX-License-Identifier: Apache-2.0
 
-package main
+package bootloose
 
 import (
 	"fmt"
 	"os"
 
-	"github.com/spf13/cobra"
-
 	"github.com/k0sproject/bootloose/pkg/cluster"
+	"github.com/k0sproject/bootloose/pkg/config"
+
+	"github.com/spf13/cobra"
 )
 
-var configCreateCmd = &cobra.Command{
-	Use:   "create",
-	Short: "Create a cluster configuration",
-	RunE:  configCreate,
-}
-
-var configCreateOptions struct {
+type configCreateOptions struct {
 	override bool
-	file     string
+	config   config.Config
 }
 
-func init() {
-	configCreateCmd.Flags().StringVarP(&configCreateOptions.file, "config", "c", Bootloose, "Cluster configuration file")
-	configCreateCmd.Flags().BoolVar(&configCreateOptions.override, "override", false, "Override configuration file if it exists")
+func NewConfigCreateCommand() *cobra.Command {
+	opts := &configCreateOptions{config: config.DefaultConfig()}
+	cmd := &cobra.Command{
+		Use:   "create",
+		Short: "Create a cluster configuration",
+		RunE:  opts.create,
+	}
 
-	name := &defaultConfig.Cluster.Name
-	configCreateCmd.PersistentFlags().StringVarP(name, "name", "n", *name, "Name of the cluster")
+	cmd.Flags().BoolVar(&opts.override, "override", false, "Override configuration file if it exists")
 
-	private := &defaultConfig.Cluster.PrivateKey
-	configCreateCmd.PersistentFlags().StringVarP(private, "key", "k", *private, "Name of the private and public key files")
+	name := &opts.config.Cluster.Name
+	cmd.Flags().StringVarP(name, "name", "n", *name, "Name of the cluster")
 
-	networks := &defaultConfig.Machines[0].Spec.Networks
-	configCreateCmd.PersistentFlags().StringSliceVar(networks, "networks", *networks, "Networks names the machines are assigned to")
+	private := &opts.config.Cluster.PrivateKey
+	cmd.Flags().StringVarP(private, "key", "k", *private, "Name of the private and public key files")
 
-	replicas := &defaultConfig.Machines[0].Count
-	configCreateCmd.PersistentFlags().IntVarP(replicas, "replicas", "r", *replicas, "Number of machine replicas")
+	networks := &opts.config.Machines[0].Spec.Networks
+	cmd.Flags().StringSliceVar(networks, "networks", *networks, "Networks names the machines are assigned to")
 
-	image := &defaultConfig.Machines[0].Spec.Image
-	configCreateCmd.PersistentFlags().StringVarP(image, "image", "i", *image, "Docker image to use in the containers")
+	replicas := &opts.config.Machines[0].Count
+	cmd.Flags().IntVarP(replicas, "replicas", "r", *replicas, "Number of machine replicas")
 
-	privileged := &defaultConfig.Machines[0].Spec.Privileged
-	configCreateCmd.PersistentFlags().BoolVar(privileged, "privileged", *privileged, "Create privileged containers")
+	image := &opts.config.Machines[0].Spec.Image
+	cmd.Flags().StringVarP(image, "image", "i", *image, "Docker image to use in the containers")
 
-	cmd := &defaultConfig.Machines[0].Spec.Cmd
-	configCreateCmd.PersistentFlags().StringVarP(cmd, "cmd", "d", *cmd, "The command to execute on the container")
+	privileged := &opts.config.Machines[0].Spec.Privileged
+	cmd.Flags().BoolVar(privileged, "privileged", *privileged, "Create privileged containers")
 
-	configCmd.AddCommand(configCreateCmd)
+	containerCmd := &opts.config.Machines[0].Spec.Cmd
+	cmd.Flags().StringVarP(containerCmd, "cmd", "d", *containerCmd, "The command to execute on the container")
+
+	return cmd
 }
 
 // configExists checks whether a configuration file has already been created.
@@ -62,14 +63,15 @@ func configExists(path string) bool {
 	return !info.IsDir()
 }
 
-func configCreate(cmd *cobra.Command, args []string) error {
-	opts := &configCreateOptions
-	cluster, err := cluster.New(defaultConfig)
+func (opts *configCreateOptions) create(cmd *cobra.Command, args []string) error {
+	cluster, err := cluster.New(opts.config)
 	if err != nil {
 		return err
 	}
-	if configExists(configFile(opts.file)) && !opts.override {
-		return fmt.Errorf("configuration file at %s already exists", opts.file)
+	cfgFile := clusterConfigFile(cmd)
+	if configExists(cfgFile) && !opts.override {
+		return fmt.Errorf("configuration file at %s already exists", cfgFile)
 	}
-	return cluster.Save(configFile(opts.file))
+	return cluster.Save(cfgFile)
 }
+

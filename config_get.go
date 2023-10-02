@@ -2,7 +2,7 @@
 // SPDX-FileCopyrightText: 2023 bootloose authors
 // SPDX-License-Identifier: Apache-2.0
 
-package main
+package bootloose
 
 import (
 	"encoding/json"
@@ -10,27 +10,20 @@ import (
 	"log"
 	"reflect"
 
-	"github.com/spf13/cobra"
 	"github.com/k0sproject/bootloose/pkg/config"
+	"github.com/spf13/cobra"
 )
 
-var getConfigCmd = &cobra.Command{
-	Use:   "get",
-	Short: "Get config file information",
-	RunE:  getConfig,
-}
-
-var getOptions struct {
-	config string
-}
-
-func init() {
-	getConfigCmd.Flags().StringVarP(&getOptions.config, "config", "c", Bootloose, "Cluster configuration file")
-	configCmd.AddCommand(getConfigCmd)
+func NewConfigGetCommand() *cobra.Command {
+	return &cobra.Command{
+		Use:   "get",
+		Short: "Get config file information",
+		RunE:  getConfig,
+	}
 }
 
 func getConfig(cmd *cobra.Command, args []string) error {
-	c, err := config.NewConfigFromFile(configFile(getOptions.config))
+	c, err := config.NewConfigFromFile(clusterConfigFile(cmd))
 	if err != nil {
 		return err
 	}

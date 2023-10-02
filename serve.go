@@ -2,7 +2,7 @@
 // SPDX-FileCopyrightText: 2023 bootloose authors
 // SPDX-License-Identifier: Apache-2.0
 
-package main
+package bootloose
 
 import (
 	"fmt"
@@ -11,22 +11,34 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/pkg/errors"
-	"github.com/spf13/cobra"
 	"github.com/k0sproject/bootloose/pkg/api"
 	"github.com/k0sproject/bootloose/pkg/cluster"
+	"github.com/pkg/errors"
+	"github.com/spf13/cobra"
 )
 
-var serveCmd = &cobra.Command{
-	Use:   "serve",
-	Short: "Launch a bootloose server",
-	RunE:  serve,
-}
-
-var serveOptions struct {
+type serveOptions struct {
 	listen       string
 	keyStorePath string
 	debug        bool
+}
+
+// defaultKeyStore is the path where to store the public keys.
+const defaultKeyStorePath = "keys"
+const defaultListenPort = 2444
+
+func NewServeCommand() *cobra.Command {
+	opts := &serveOptions{}
+	cmd := &cobra.Command{
+		Use:   "serve",
+		Short: "Launch a bootloose server",
+		RunE:  opts.serve,
+	}
+	cmd.Flags().StringVarP(&opts.listen, "listen", "l", fmt.Sprintf(":%d", defaultListenPort), "Listen address")
+	cmd.Flags().StringVar(&opts.keyStorePath, "keystore-path", defaultKeyStorePath, "Path of the public keys store")
+	cmd.Flags().BoolVar(&opts.debug, "debug", false, "Enable debug")
+
+	return cmd
 }
 
 func baseURI(addr string) (string, error) {
@@ -40,16 +52,7 @@ func baseURI(addr string) (string, error) {
 	return fmt.Sprintf("http://%s:%s", host, port), nil
 }
 
-func init() {
-	serveCmd.Flags().StringVarP(&serveOptions.listen, "listen", "l", ":2444", "Cluster configuration file")
-	serveCmd.Flags().StringVar(&serveOptions.keyStorePath, "keystore-path", defaultKeyStorePath, "Path of the public keys store")
-	serveCmd.Flags().BoolVar(&serveOptions.debug, "debug", false, "Enable debug")
-	bootloose.AddCommand(serveCmd)
-}
-
-func serve(cmd *cobra.Command, args []string) error {
-	opts := &serveOptions
-
+func (opts *serveOptions) serve(cmd *cobra.Command, args []string) error {
 	baseURI, err := baseURI(opts.listen)
 	if err != nil {
 		return errors.Wrapf(err, "invalid listen address '%s'", opts.listen)
@@ -74,3 +77,4 @@ func serve(cmd *cobra.Command, args []string) error {
 
 	return nil
 }
+
