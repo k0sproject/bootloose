@@ -1,5 +1,5 @@
-bootloose
-bootloose.exe
+/bootloose
+/bootloose.exe
 /bin
 /vendor
 *.pub
