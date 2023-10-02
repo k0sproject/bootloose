@@ -1,6 +1,9 @@
-%defer footloose delete --config %testName.yaml
-footloose create --config %testName.yaml
-footloose --config %testName.yaml ssh root@node0 -- apt-get update && apt-get install -y docker.io
-footloose --config %testName.yaml ssh root@node0 systemctl start docker
-footloose --config %testName.yaml ssh root@node0 docker pull busybox
-%out footloose --config %testName.yaml ssh root@node0 docker run busybox echo success
+# SPDX-FileCopyrightText: 2019 Weaveworks Ltd.
+# SPDX-FileCopyrightText: 2023 bootloose authors
+# SPDX-License-Identifier: Apache-2.0
+%defer bootloose delete --config %testName.yaml
+bootloose create --config %testName.yaml
+bootloose --config %testName.yaml ssh root@node0 -- apt-get update && apt-get install -y docker.io
+bootloose --config %testName.yaml ssh root@node0 systemctl start docker
+bootloose --config %testName.yaml ssh root@node0 docker pull busybox
+%out bootloose --config %testName.yaml ssh root@node0 docker run busybox echo success

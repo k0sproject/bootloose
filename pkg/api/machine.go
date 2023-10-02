@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2019 Weaveworks Ltd.
+// SPDX-FileCopyrightText: 2023 bootloose authors
+// SPDX-License-Identifier: Apache-2.0
+
 package api
 
 import (
@@ -7,8 +11,8 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
-	"github.com/k0sproject/footloose/pkg/cluster"
-	"github.com/k0sproject/footloose/pkg/config"
+	"github.com/k0sproject/bootloose/pkg/cluster"
+	"github.com/k0sproject/bootloose/pkg/config"
 )
 
 // MachineURI returns the URI identifying a machine in the REST API.

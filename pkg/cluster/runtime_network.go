@@ -1,10 +1,14 @@
+// SPDX-FileCopyrightText: 2019 Weaveworks Ltd.
+// SPDX-FileCopyrightText: 2023 bootloose authors
+// SPDX-License-Identifier: Apache-2.0
+
 package cluster
 
 import (
 	"net"
 
 	"github.com/docker/docker/api/types/network"
-	"github.com/k0sproject/footloose/pkg/ignite"
+	"github.com/k0sproject/bootloose/pkg/ignite"
 )
 
 const (

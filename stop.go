@@ -1,9 +1,13 @@
+// SPDX-FileCopyrightText: 2019 Weaveworks Ltd.
+// SPDX-FileCopyrightText: 2023 bootloose authors
+// SPDX-License-Identifier: Apache-2.0
+
 package main
 
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/k0sproject/footloose/pkg/cluster"
+	"github.com/k0sproject/bootloose/pkg/cluster"
 )
 
 var stopCmd = &cobra.Command{
@@ -17,8 +21,8 @@ var stopOptions struct {
 }
 
 func init() {
-	stopCmd.Flags().StringVarP(&stopOptions.config, "config", "c", Footloose, "Cluster configuration file")
-	footloose.AddCommand(stopCmd)
+	stopCmd.Flags().StringVarP(&stopOptions.config, "config", "c", Bootloose, "Cluster configuration file")
+	bootloose.AddCommand(stopCmd)
 }
 
 func stop(cmd *cobra.Command, args []string) error {

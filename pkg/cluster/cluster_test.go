@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2019 Weaveworks Ltd.
+// SPDX-FileCopyrightText: 2023 bootloose authors
+// SPDX-License-Identifier: Apache-2.0
+
 package cluster
 
 import (
@@ -32,7 +36,7 @@ func TestNewClusterWithHostPort(t *testing.T) {
 machines:
 - count: 2
   spec:
-    image: centos7
+    image: quay.io/k0sproject/bootloose-ubuntu20.04:latest
     name: node%d
     portMappings:
     - containerPort: 22

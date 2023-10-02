@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2019 Weaveworks Ltd.
+// SPDX-FileCopyrightText: 2023 bootloose authors
+// SPDX-License-Identifier: Apache-2.0
+
 package main
 
 import (
@@ -8,7 +12,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/k0sproject/footloose/pkg/cluster"
+	"github.com/k0sproject/bootloose/pkg/cluster"
 )
 
 var sshCmd = &cobra.Command{
@@ -24,9 +28,9 @@ var sshOptions struct {
 }
 
 func init() {
-	sshCmd.Flags().StringVarP(&sshOptions.config, "config", "c", Footloose, "Cluster configuration file")
+	sshCmd.Flags().StringVarP(&sshOptions.config, "config", "c", Bootloose, "Cluster configuration file")
 	sshCmd.Flags().BoolVarP(&sshOptions.verbose, "verbose", "v", false, "SSH verbose output")
-	footloose.AddCommand(sshCmd)
+	bootloose.AddCommand(sshCmd)
 }
 
 func ssh(cmd *cobra.Command, args []string) error {

@@ -1,5 +1,7 @@
 /*
 Copyright 2018 The Kubernetes Authors.
+Copyright 2019 Weaveworks Ltd.
+Copyright 2023 bootloose authors
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,7 +21,7 @@ package docker
 import (
 	"strings"
 
-	"github.com/k0sproject/footloose/pkg/exec"
+	"github.com/k0sproject/bootloose/pkg/exec"
 )
 
 // UsernsRemap checks if userns-remap is enabled in dockerd

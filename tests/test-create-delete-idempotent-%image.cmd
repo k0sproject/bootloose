@@ -1,12 +1,15 @@
+# SPDX-FileCopyrightText: 2019 Weaveworks Ltd.
+# SPDX-FileCopyrightText: 2023 bootloose authors
+# SPDX-License-Identifier: Apache-2.0
 # This test makes sure that cluster create and delete can be run multiple times without error 
 # when no changes to cluster state are necessary
 
-footloose config create --override --config %testName.footloose --name %testName --key %testName-key --image %image
-%defer footloose delete --config %testName.footloose
+bootloose config create --override --config %testName.bootloose --name %testName --key %testName-key --image %image
+%defer bootloose delete --config %testName.bootloose
 
-%defer rm -f %testName.footloose %testName-key %testName-key.pub
-footloose create --config %testName.footloose
-footloose create --config %testName.footloose
+%defer rm -f %testName.bootloose %testName-key %testName-key.pub
+bootloose create --config %testName.bootloose
+bootloose create --config %testName.bootloose
 
-footloose delete --config %testName.footloose
-footloose delete --config %testName.footloose
+bootloose delete --config %testName.bootloose
+bootloose delete --config %testName.bootloose

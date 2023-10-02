@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2019 Weaveworks Ltd.
+# SPDX-FileCopyrightText: 2023 bootloose authors
+# SPDX-License-Identifier: Apache-2.0
 ---
 - name: Install nginx
   hosts: cluster-node0
@@ -15,7 +18,7 @@
 
   - name: Insert Index Page
     copy:
-      content: "welcome to footloose nginx ansible example"
+      content: "welcome to bootloose nginx ansible example"
       dest: /usr/share/nginx/html/index.html
 
   - name: Start NGiNX

@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2019 Weaveworks Ltd.
+// SPDX-FileCopyrightText: 2023 bootloose authors
+// SPDX-License-Identifier: Apache-2.0
+
 package config
 
 import (
@@ -43,7 +47,7 @@ type PortMapping struct {
 type Machine struct {
 	// Name is the machine name.
 	//
-	// When used in a MachineReplicas object, eg. in footloose.yaml config files,
+	// When used in a MachineReplicas object, eg. in bootloose.yaml config files,
 	// this field a format string. This format string needs to have a '%d', which
 	// is populated by the machine index, a number between 0 and N-1, N being the
 	// Count field of MachineReplicas. Name will default to "node%d"

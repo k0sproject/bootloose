@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2023 bootloose authors
+# SPDX-License-Identifier: Apache-2.0
 FROM alpine:3.18.3
 
 RUN apk add --no-cache \

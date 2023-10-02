@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2019 Weaveworks Ltd.
+// SPDX-FileCopyrightText: 2023 bootloose authors
+// SPDX-License-Identifier: Apache-2.0
+
 package tests
 
 import (
@@ -244,7 +248,7 @@ replaceOuter:
 		case "%error":
 			t.shouldFail = true
 			parts = parts[1:]
-		case "footloose":
+		case "bootloose":
 			parts = append(goRun, parts[1:]...)
 		default:
 			break replaceOuter

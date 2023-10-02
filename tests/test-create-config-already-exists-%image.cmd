@@ -1,7 +1,10 @@
-# Tests that footloose config create fails if the config already exists
+# SPDX-FileCopyrightText: 2019 Weaveworks Ltd.
+# SPDX-FileCopyrightText: 2023 bootloose authors
+# SPDX-License-Identifier: Apache-2.0
+# Tests that bootloose config create fails if the config already exists
 
-rm -f %testName.footloose
-footloose config create --config %testName.footloose --name %testName --key %testName-key --image %image
-%defer rm -f %testName.footloose %testName-key %testName-key.pub
+rm -f %testName.bootloose
+bootloose config create --config %testName.bootloose --name %testName --key %testName-key --image %image
+%defer rm -f %testName.bootloose %testName-key %testName-key.pub
 
-%error footloose config create --config %testName.footloose --name %testName --key %testName-key --image %image
+%error bootloose config create --config %testName.bootloose --name %testName --key %testName-key --image %image

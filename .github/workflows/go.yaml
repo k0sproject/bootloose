@@ -81,8 +81,8 @@ jobs:
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache
     
-    - name: Remove any leftover footloose machines
-      run: docker ps -a --filter "label=io.k0sproject.footloose.owner=footloose" --format "{{.ID}}" | xargs -r docker rm
+    - name: Remove any leftover bootloose machines
+      run: docker ps -a --filter "label=io.k0sproject.bootloose.owner=bootloose" --format "{{.ID}}" | xargs -r docker rm
 
     # TODO i think main and pkg can be run outside of the matrix
     - name: Run tests (main)

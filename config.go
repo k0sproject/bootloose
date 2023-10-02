@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2019 Weaveworks Ltd.
+// SPDX-FileCopyrightText: 2023 bootloose authors
+// SPDX-License-Identifier: Apache-2.0
+
 package main
 
 import (
@@ -10,5 +14,5 @@ var configCmd = &cobra.Command{
 }
 
 func init() {
-	footloose.AddCommand(configCmd)
+	bootloose.AddCommand(configCmd)
 }

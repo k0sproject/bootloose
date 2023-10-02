@@ -1,23 +1,27 @@
+// SPDX-FileCopyrightText: 2019 Weaveworks Ltd.
+// SPDX-FileCopyrightText: 2023 bootloose authors
+// SPDX-License-Identifier: Apache-2.0
+
 package main
 
 import (
 	"fmt"
 
 	_ "github.com/carlmjohnson/versioninfo" // Needed to set version info during go install
-	"github.com/k0sproject/footloose/version"
+	"github.com/k0sproject/bootloose/version"
 
 	"github.com/spf13/cobra"
 )
 
 var versionCmd = &cobra.Command{
 	Use:   "version",
-	Short: "Print footloose version",
+	Short: "Print bootloose version",
 	Run:   showVersion,
 }
 
 func init() {
 	versionCmd.Flags().BoolP("long", "l", false, "Print long version")
-	footloose.AddCommand(versionCmd)
+	bootloose.AddCommand(versionCmd)
 }
 
 func showVersion(cmd *cobra.Command, _ []string) {

@@ -1,4 +1,4 @@
-module github.com/k0sproject/footloose
+module github.com/k0sproject/bootloose
 
 go 1.21.0
 

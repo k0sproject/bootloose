@@ -1,16 +1,21 @@
+<!--
+SPDX-FileCopyrightText: 2019 Weaveworks Ltd.
+SPDX-FileCopyrightText: 2023 bootloose authors
+SPDX-License-Identifier: Apache-2.0
+-->
 # Ansible provisioned machine
 
 create a new environment configuration:
 
 ```console
-$ footloose config create --replicas 1
+$ bootloose config create --replicas 1
 ```
 
 deploy container images:
 
 ```console
-$ footloose create
-INFO[0000] Pulling image: quay.io/footloose/ubuntu20.04 ...
+$ bootloose create
+INFO[0000] Pulling image: quay.io/bootloose/ubuntu20.04 ...
 INFO[0007] Creating machine: cluster-node0 ...
 ```
 

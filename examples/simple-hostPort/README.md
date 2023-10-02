@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: 2019 Weaveworks Ltd.
+SPDX-FileCopyrightText: 2023 bootloose authors
+SPDX-License-Identifier: Apache-2.0
+-->
 # Simple port mapping example
 
 First prepare your deploy setup. Notice the last two lines, which means that
@@ -5,14 +10,14 @@ node0 port 22 will get mapped to host port 2222, and node1 port 22 will get
 mapped to host port 2223:
 
 ```console
-$ cat footloose.yaml
+$ cat bootloose.yaml
 cluster:
   name: cluster
   privateKey: cluster-key
 machines:
 - count: 2
   spec:
-    image: quay.io/k0sproject/footloose-debian12
+    image: quay.io/k0sproject/bootloose-debian12
     name: node%d
     portMappings:
     - containerPort: 22
@@ -22,8 +27,8 @@ machines:
 Now you can deploy your cluster:
 
 ```console
-$ footloose create
-INFO[0000] Image: quay.io/k0sproject/footloose-debian12 present locally 
+$ bootloose create
+INFO[0000] Image: quay.io/k0sproject/bootloose-debian12 present locally 
 INFO[0000] Creating machine: cluster-node0 ...          
 INFO[0001] Creating machine: cluster-node1 ...          
 
@@ -51,7 +56,7 @@ node1
 When finished, clean up:
 
 ```console
-$ footloose delete
+$ bootloose delete
 INFO[0000] Deleting machine: cluster-node0 ...          
 INFO[0000] Deleting machine: cluster-node1 ...      
 ```

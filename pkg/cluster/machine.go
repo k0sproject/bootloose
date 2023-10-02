@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2019 Weaveworks Ltd.
+// SPDX-FileCopyrightText: 2023 bootloose authors
+// SPDX-License-Identifier: Apache-2.0
+
 package cluster
 
 import (
@@ -7,12 +11,12 @@ import (
 	"syscall"
 
 	"github.com/docker/docker/api/types/network"
+	"github.com/k0sproject/bootloose/pkg/config"
+	"github.com/k0sproject/bootloose/pkg/docker"
+	"github.com/k0sproject/bootloose/pkg/exec"
+	"github.com/k0sproject/bootloose/pkg/ignite"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
-	"github.com/k0sproject/footloose/pkg/config"
-	"github.com/k0sproject/footloose/pkg/docker"
-	"github.com/k0sproject/footloose/pkg/exec"
-	"github.com/k0sproject/footloose/pkg/ignite"
 )
 
 // Machine is a single machine.
@@ -233,7 +237,7 @@ func (m *Machine) IsIgnite() (b bool) {
 
 	if !igniteChecked && b {
 		if syscall.Getuid() != 0 {
-			log.Fatalf("Footloose needs to run as root to use the %q backend", ignite.BackendName)
+			log.Fatalf("bootloose needs to run as root to use the %q backend", ignite.BackendName)
 		}
 
 		ignite.CheckVersion()

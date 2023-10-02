@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2019 Weaveworks Ltd.
+# SPDX-FileCopyrightText: 2023 bootloose authors
+# SPDX-License-Identifier: Apache-2.0
 GO_SRCS := $(shell find . -type f -name '*.go' -a ! \( -name 'zz_generated*' -o -name '*_test.go' \))
 GO_TESTS := $(shell find . -type f -name '*_test.go')
 TAG_NAME = $(shell git describe --tags --abbrev=0 --exact-match 2>/dev/null)
@@ -6,17 +9,16 @@ ifdef TAG_NAME
 	ENVIRONMENT = production
 endif
 ENVIRONMENT ?= development
-LD_FLAGS = -s -w -X github.com/k0sproject/footloose/version.Environment=$(ENVIRONMENT) -X github.com/carlmjohnson/versioninfo.Revision=$(GIT_COMMIT) -X github.com/carlmjohnson/versioninfo.Version=$(TAG_NAME)
+LD_FLAGS = -s -w -X github.com/k0sproject/bootloose/version.Environment=$(ENVIRONMENT) -X github.com/carlmjohnson/versioninfo.Revision=$(GIT_COMMIT) -X github.com/carlmjohnson/versioninfo.Version=$(TAG_NAME)
 BUILD_FLAGS = -trimpath -a -tags "netgo,osusergo,static_build" -installsuffix netgo -ldflags "$(LD_FLAGS) -extldflags '-static'"
 PREFIX = /usr/local
 
-BIN_PREFIX := footloose-
+BIN_PREFIX := bootloose-
 
-all: footloose
+all: bootloose
 
-footloose:
-	go build -v -o bin/footloose .
-	go build -v $(BUILD_FLAGS) -o bin/footloose .
+bootloose:
+	go build -v $(BUILD_FLAGS) -o bootloose .
 
 PLATFORMS := linux-amd64 linux-arm64 linux-arm darwin-amd64 darwin-arm64
 bins := $(foreach platform, $(PLATFORMS), bin/$(BIN_PREFIX)$(platform))
@@ -43,9 +45,9 @@ bin/sha256sums.md: bin/sha256sums.txt
 
 build-all: $(bins) bin/sha256sums.md
 
-install: footloose
+install: bootloose
 	install -d $(DESTDIR)$(PREFIX)/bin/
-	install -m 755 footloose $(DESTDIR)$(PREFIX)/bin/
+	install -m 755 bootloose $(DESTDIR)$(PREFIX)/bin/
 
 # Build all images
 images:
@@ -75,7 +77,7 @@ list-images:
 # Clean up all stamps and other generated files
 clean:
 	@$(MAKE) -C images clean
-	rm -f footloose bin/
+	rm -f bootloose bin/*
 
 # Phony targets
 .PHONY: install images image-% test-unit test-e2e test-e2e-% list-images clean build-all

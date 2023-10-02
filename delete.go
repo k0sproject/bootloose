@@ -1,9 +1,13 @@
+// SPDX-FileCopyrightText: 2019 Weaveworks Ltd.
+// SPDX-FileCopyrightText: 2023 bootloose authors
+// SPDX-License-Identifier: Apache-2.0
+
 package main
 
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/k0sproject/footloose/pkg/cluster"
+	"github.com/k0sproject/bootloose/pkg/cluster"
 )
 
 var deleteCmd = &cobra.Command{
@@ -17,8 +21,8 @@ var deleteOptions struct {
 }
 
 func init() {
-	deleteCmd.Flags().StringVarP(&deleteOptions.config, "config", "c", Footloose, "Cluster configuration file")
-	footloose.AddCommand(deleteCmd)
+	deleteCmd.Flags().StringVarP(&deleteOptions.config, "config", "c", Bootloose, "Cluster configuration file")
+	bootloose.AddCommand(deleteCmd)
 }
 
 func delete(cmd *cobra.Command, args []string) error {

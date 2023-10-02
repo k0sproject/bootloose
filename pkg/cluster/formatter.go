@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2019 Weaveworks Ltd.
+// SPDX-FileCopyrightText: 2023 bootloose authors
+// SPDX-License-Identifier: Apache-2.0
+
 package cluster
 
 import (
@@ -7,7 +11,7 @@ import (
 	"strings"
 	"text/tabwriter"
 
-	"github.com/k0sproject/footloose/pkg/config"
+	"github.com/k0sproject/bootloose/pkg/config"
 )
 
 // Formatter formats a slice of machines and outputs the result
