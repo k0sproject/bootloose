@@ -2,7 +2,7 @@
 // SPDX-FileCopyrightText: 2023 bootloose authors
 // SPDX-License-Identifier: Apache-2.0
 
-package main
+package bootloose
 
 import (
 	"fmt"
@@ -13,15 +13,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var versionCmd = &cobra.Command{
-	Use:   "version",
-	Short: "Print bootloose version",
-	Run:   showVersion,
-}
-
-func init() {
-	versionCmd.Flags().BoolP("long", "l", false, "Print long version")
-	bootloose.AddCommand(versionCmd)
+func NewVersionCommand() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "version",
+		Short: "Print bootloose version",
+		Run:   showVersion,
+	}
+	cmd.Flags().BoolP("long", "l", false, "Print long version")
+	return cmd
 }
 
 func showVersion(cmd *cobra.Command, _ []string) {
@@ -33,3 +32,4 @@ func showVersion(cmd *cobra.Command, _ []string) {
 	}
 	fmt.Println(version.Version)
 }
+

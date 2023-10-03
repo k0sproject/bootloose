@@ -1,4 +1,8 @@
-package main
+// SPDX-FileCopyrightText: 2019 Weaveworks Ltd.
+// SPDX-FileCopyrightText: 2023 bootloose authors
+// SPDX-License-Identifier: Apache-2.0
+
+package bootloose
 
 import (
 	"testing"
@@ -22,3 +26,4 @@ func TestBaseURI(t *testing.T) {
 		assert.Equal(t, test.expected, uri)
 	}
 }
+

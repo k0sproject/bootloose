@@ -86,7 +86,7 @@ jobs:
 
     # TODO i think main and pkg can be run outside of the matrix
     - name: Run tests (main)
-      run: go test -timeout 5m -v .
+      run: go test -timeout 5m -v ./cmd/...
 
     - name: Run tests (pkg)
       run: go test -timeout 5m -v ./pkg/...

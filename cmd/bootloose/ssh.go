@@ -2,7 +2,7 @@
 // SPDX-FileCopyrightText: 2023 bootloose authors
 // SPDX-License-Identifier: Apache-2.0
 
-package main
+package bootloose
 
 import (
 	"errors"
@@ -15,26 +15,24 @@ import (
 	"github.com/k0sproject/bootloose/pkg/cluster"
 )
 
-var sshCmd = &cobra.Command{
-	Use:   "ssh",
-	Short: "SSH into a machine",
-	Args:  validateArgs,
-	RunE:  ssh,
-}
-
-var sshOptions struct {
-	config  string
+type sshOptions struct {
 	verbose bool
 }
 
-func init() {
-	sshCmd.Flags().StringVarP(&sshOptions.config, "config", "c", Bootloose, "Cluster configuration file")
-	sshCmd.Flags().BoolVarP(&sshOptions.verbose, "verbose", "v", false, "SSH verbose output")
-	bootloose.AddCommand(sshCmd)
+func NewSSHCommand() *cobra.Command {
+	opts := &sshOptions{}
+	cmd := &cobra.Command{
+		Use:   "ssh",
+		Short: "SSH into a machine",
+		Args:  validateArgs,
+		RunE:  opts.ssh,
+	}
+	cmd.Flags().BoolVarP(&opts.verbose, "verbose", "v", false, "SSH verbose output")
+	return cmd
 }
 
-func ssh(cmd *cobra.Command, args []string) error {
-	cluster, err := cluster.NewFromFile(configFile(sshOptions.config))
+func (opts *sshOptions) ssh(cmd *cobra.Command, args []string) error {
+	cluster, err := cluster.NewFromFile(clusterConfigFile(cmd))
 	if err != nil {
 		return err
 	}
@@ -56,16 +54,17 @@ func ssh(cmd *cobra.Command, args []string) error {
 		username = user.Username
 	}
 	var remoteArgs []string
-	if sshOptions.verbose {
+	if opts.verbose {
 		remoteArgs = append(remoteArgs, "-v")
 	}
 	remoteArgs = append(remoteArgs, args[1:]...)
 	return cluster.SSH(node, username, remoteArgs...)
 }
 
-func validateArgs(cmd *cobra.Command, args []string) error {
+func validateArgs(_ *cobra.Command, args []string) error {
 	if len(args) < 1 {
 		return errors.New("missing machine name argument")
 	}
 	return nil
 }
+
