@@ -147,7 +147,6 @@ cluster:
   privateKey: cluster-key
 machines:
 - count: 3
-  backend: docker
   spec:
     image: quay.io/k0sproject/bootloose-debian12
     name: node%d

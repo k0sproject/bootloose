@@ -4,6 +4,5 @@
   "networks": [
     "net1",
     "net2"
-  ],
-  "backend": "docker"
+  ]
 }

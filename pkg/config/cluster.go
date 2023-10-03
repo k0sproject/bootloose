@@ -91,7 +91,6 @@ func DefaultConfig() Config {
 					PortMappings: []PortMapping{
 						{ContainerPort: 22},
 					},
-					Backend: "docker",
 				},
 			},
 		},
