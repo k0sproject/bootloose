@@ -50,7 +50,6 @@ func NewRootCommand(ctx context.Context) *cobra.Command {
 
 	// hide config flag from commands that do not need it
 	for _, configlessCmd := range []*cobra.Command{
-		NewServeCommand(),
 		NewVersionCommand(),
 	} {
 		cmd.AddCommand(configlessCmd)
