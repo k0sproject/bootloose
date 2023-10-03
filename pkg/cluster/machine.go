@@ -63,6 +63,14 @@ func (m *Machine) IsStarted() bool {
 
 // HostPort returns the host port corresponding to the given container port.
 func (m *Machine) HostPort(containerPort int) (int, error) {
+	if !m.IsCreated() {
+		return -1, errors.Errorf("hostport: container %s is not created", m.name)
+	}
+
+	if !m.IsStarted() {
+		return -1, errors.Errorf("hostport: container %s is not started", m.name)
+	}
+
 	// Use the cached version first
 	if hostPort, ok := m.ports[containerPort]; ok {
 		return hostPort, nil
