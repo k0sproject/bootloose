@@ -6,7 +6,6 @@ require (
 	github.com/carlmjohnson/versioninfo v0.22.5
 	github.com/docker/docker v24.0.6+incompatible
 	github.com/ghodss/yaml v1.0.0
-	github.com/gorilla/mux v1.8.0
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.9.3
