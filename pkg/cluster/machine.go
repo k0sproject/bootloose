@@ -8,15 +8,11 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
-	"syscall"
 
 	"github.com/docker/docker/api/types/network"
 	"github.com/k0sproject/bootloose/pkg/config"
 	"github.com/k0sproject/bootloose/pkg/docker"
-	"github.com/k0sproject/bootloose/pkg/exec"
-	"github.com/k0sproject/bootloose/pkg/ignite"
 	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
 )
 
 // Machine is a single machine.
@@ -40,14 +36,6 @@ type Machine struct {
 // ContainerName is the name of the running container corresponding to this
 // Machine.
 func (m *Machine) ContainerName() string {
-	if m.IsIgnite() {
-		filter := fmt.Sprintf(`label=ignite.name=%s`, m.name)
-		cid, err := exec.ExecuteCommand("docker", "ps", "-q", "-f", filter)
-		if err != nil || len(cid) == 0 {
-			return m.name
-		}
-		return cid
-	}
 	return m.name
 }
 
@@ -59,10 +47,6 @@ func (m *Machine) Hostname() string {
 // IsCreated returns if a machine is has been created. A created machine could
 // either be running or stopped.
 func (m *Machine) IsCreated() bool {
-	if m.IsIgnite() {
-		return ignite.IsCreated(m.name)
-	}
-
 	res, _ := docker.Inspect(m.name, "{{.Name}}")
 	if len(res) > 0 && len(res[0]) > 0 {
 		return true
@@ -72,10 +56,6 @@ func (m *Machine) IsCreated() bool {
 
 // IsStarted returns if a machine is currently started or not.
 func (m *Machine) IsStarted() bool {
-	if m.IsIgnite() {
-		return ignite.IsStarted(m.name)
-	}
-
 	res, _ := docker.Inspect(m.name, "{{.State.Running}}")
 	parsed, _ := strconv.ParseBool(strings.Trim(res[0], `'`))
 	return parsed
@@ -83,6 +63,14 @@ func (m *Machine) IsStarted() bool {
 
 // HostPort returns the host port corresponding to the given container port.
 func (m *Machine) HostPort(containerPort int) (int, error) {
+	if !m.IsCreated() {
+		return -1, errors.Errorf("hostport: container %s is not created", m.name)
+	}
+
+	if !m.IsStarted() {
+		return -1, errors.Errorf("hostport: container %s is not started", m.name)
+	}
+
 	// Use the cached version first
 	if hostPort, ok := m.ports[containerPort]; ok {
 		return hostPort, nil
@@ -90,41 +78,18 @@ func (m *Machine) HostPort(containerPort int) (int, error) {
 
 	var hostPort int
 
-	// Handle Ignite VMs
-	if m.IsIgnite() {
-		// Retrieve the machine details
-		vm, err := ignite.PopulateMachineDetails(m.name)
-		if err != nil {
-			return -1, errors.Wrap(err, "failed to populate VM details")
-		}
+	// retrieve the specific port mapping using docker inspect
+	lines, err := docker.Inspect(m.ContainerName(), fmt.Sprintf("{{(index (index .NetworkSettings.Ports \"%d/tcp\") 0).HostPort}}", containerPort))
+	if err != nil {
+		return -1, errors.Wrapf(err, "hostport: failed to inspect container: %v", lines)
+	}
+	if len(lines) != 1 {
+		return -1, errors.Errorf("hostport: should only be one line, got %d lines", len(lines))
+	}
 
-		// Find the host port for the given VM port
-		var found = false
-		for _, p := range vm.Spec.Network.Ports {
-			if int(p.VMPort) == containerPort {
-				hostPort = int(p.HostPort)
-				found = true
-				break
-			}
-		}
-
-		if !found {
-			return -1, fmt.Errorf("invalid VM port queried: %d", containerPort)
-		}
-	} else {
-		// retrieve the specific port mapping using docker inspect
-		lines, err := docker.Inspect(m.ContainerName(), fmt.Sprintf("{{(index (index .NetworkSettings.Ports \"%d/tcp\") 0).HostPort}}", containerPort))
-		if err != nil {
-			return -1, errors.Wrapf(err, "hostport: failed to inspect container: %v", lines)
-		}
-		if len(lines) != 1 {
-			return -1, errors.Errorf("hostport: should only be one line, got %d lines", len(lines))
-		}
-
-		port := strings.Replace(lines[0], "'", "", -1)
-		if hostPort, err = strconv.Atoi(port); err != nil {
-			return -1, errors.Wrap(err, "hostport: failed to parse string to int")
-		}
+	port := strings.Replace(lines[0], "'", "", -1)
+	if hostPort, err = strconv.Atoi(port); err != nil {
+		return -1, errors.Wrap(err, "hostport: failed to parse string to int")
 	}
 
 	if m.ports == nil {
@@ -147,30 +112,6 @@ func (m *Machine) networks() ([]*RuntimeNetwork, error) {
 	}
 	m.runtimeNetworks = NewRuntimeNetworks(networks)
 	return m.runtimeNetworks, nil
-}
-
-func (m *Machine) igniteStatus(s *MachineStatus) error {
-	vm, err := ignite.PopulateMachineDetails(m.name)
-	if err != nil {
-		return err
-	}
-
-	// Set Ports
-	var ports []port
-	for _, p := range vm.Spec.Network.Ports {
-		ports = append(ports, port{
-			Host:  int(p.HostPort),
-			Guest: int(p.VMPort),
-		})
-	}
-	s.Ports = ports
-	if vm.Status.IpAddresses != nil && len(vm.Status.IpAddresses) > 0 {
-		m.ip = vm.Status.IpAddresses[0]
-	}
-
-	s.RuntimeNetworks = NewIgniteRuntimeNetwork(&vm.Status)
-
-	return nil
 }
 
 func (m *Machine) dockerStatus(s *MachineStatus) error {
@@ -219,30 +160,7 @@ func (m *Machine) Status() *MachineStatus {
 	}
 	s.State = state
 
-	if m.IsIgnite() {
-		_ = m.igniteStatus(&s)
-	} else {
-		_ = m.dockerStatus(&s)
-	}
+	_ = m.dockerStatus(&s)
 
 	return &s
-}
-
-// Only check for Ignite prerequisites once
-var igniteChecked bool
-
-// IsIgnite returns if the backend is Ignite
-func (m *Machine) IsIgnite() (b bool) {
-	b = m.spec.Backend == ignite.BackendName
-
-	if !igniteChecked && b {
-		if syscall.Getuid() != 0 {
-			log.Fatalf("bootloose needs to run as root to use the %q backend", ignite.BackendName)
-		}
-
-		ignite.CheckVersion()
-		igniteChecked = true
-	}
-
-	return
 }

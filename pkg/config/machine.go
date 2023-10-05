@@ -72,45 +72,6 @@ type Machine struct {
 	// PublicKey is the name of the public key to upload onto the machine for root
 	// SSH access.
 	PublicKey string `json:"publicKey,omitempty"`
-
-	// Backend specifies the runtime backend for this machine
-	Backend string `json:"backend,omitempty"`
-	// Ignite specifies ignite-specific options
-	Ignite *Ignite `json:"ignite,omitempty"`
-}
-
-func (m *Machine) IgniteConfig() Ignite {
-	i := Ignite{}
-	if m.Ignite != nil {
-		i = *m.Ignite
-	}
-	if i.CPUs == 0 {
-		i.CPUs = 2
-	}
-	if len(i.Memory) == 0 {
-		i.Memory = "1GB"
-	}
-	if len(i.DiskSize) == 0 {
-		i.DiskSize = "4GB"
-	}
-	if len(i.Kernel) == 0 {
-		i.Kernel = "weaveworks/ignite-kernel:4.19.47"
-	}
-	return i
-}
-
-// Ignite holds the ignite-specific configuration
-type Ignite struct {
-	// CPUs specify the number of vCPUs to use. Default: 2
-	CPUs uint64 `json:"cpus,omitempty"`
-	// Memory specifies the amount of RAM the VM should have. Default: 1GB
-	Memory string `json:"memory,omitempty"`
-	// DiskSize specifies the amount of disk space the VM should have. Default: 4GB
-	DiskSize string `json:"diskSize,omitempty"`
-	// Kernel specifies an OCI image to use for the kernel overlay
-	Kernel string `json:"kernel,omitempty"`
-	// Files to copy to the VM
-	CopyFiles map[string]string `json:"copyFiles,omitempty"`
 }
 
 // validate checks basic rules for Machine's fields

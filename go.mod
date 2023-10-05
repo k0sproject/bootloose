@@ -3,7 +3,6 @@ module github.com/k0sproject/bootloose
 go 1.21.0
 
 require (
-	github.com/blang/semver v3.5.1+incompatible
 	github.com/carlmjohnson/versioninfo v0.22.5
 	github.com/docker/docker v24.0.6+incompatible
 	github.com/ghodss/yaml v1.0.0

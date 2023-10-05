@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
@@ -20,7 +19,6 @@ import (
 	"github.com/k0sproject/bootloose/pkg/config"
 	"github.com/k0sproject/bootloose/pkg/docker"
 	"github.com/k0sproject/bootloose/pkg/exec"
-	"github.com/k0sproject/bootloose/pkg/ignite"
 	"github.com/mitchellh/go-homedir"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
@@ -235,55 +233,40 @@ func (c *Cluster) CreateMachine(machine *Machine, i int) error {
 		cmd = machine.spec.Cmd
 	}
 
-	if machine.IsIgnite() {
-		pubKeyPath := c.spec.Cluster.PrivateKey + ".pub"
-		if !filepath.IsAbs(pubKeyPath) {
-			wd, err := os.Getwd()
-			if err != nil {
-				return err
-			}
-			pubKeyPath = filepath.Join(wd, pubKeyPath)
-		}
+	runArgs := c.createMachineRunArgs(machine, name, i)
+	_, err = docker.Create(machine.spec.Image,
+		runArgs,
+		[]string{cmd},
+	)
+	if err != nil {
+		return err
+	}
 
-		if _, err := ignite.Create(machine.name, machine.spec, pubKeyPath); err != nil {
-			return err
-		}
-	} else {
-		runArgs := c.createMachineRunArgs(machine, name, i)
-		_, err := docker.Create(machine.spec.Image,
-			runArgs,
-			[]string{cmd},
-		)
-		if err != nil {
-			return err
-		}
-
-		if len(machine.spec.Networks) > 1 {
-			for _, network := range machine.spec.Networks[1:] {
-				log.Infof("Connecting %s to the %s network...", name, network)
-				if network == "bridge" {
-					if err := docker.ConnectNetwork(name, network); err != nil {
-						return err
-					}
-				} else {
-					if err := docker.ConnectNetworkWithAlias(name, network, machine.Hostname()); err != nil {
-						return err
-					}
+	if len(machine.spec.Networks) > 1 {
+		for _, network := range machine.spec.Networks[1:] {
+			log.Infof("Connecting %s to the %s network...", name, network)
+			if network == "bridge" {
+				if err := docker.ConnectNetwork(name, network); err != nil {
+					return err
+				}
+			} else {
+				if err := docker.ConnectNetworkWithAlias(name, network, machine.Hostname()); err != nil {
+					return err
 				}
 			}
 		}
+	}
 
-		if err := docker.Start(name); err != nil {
-			return err
-		}
+	if err := docker.Start(name); err != nil {
+		return err
+	}
 
-		// Initial provisioning.
-		if err := containerRunShell(name, initScript); err != nil {
-			return err
-		}
-		if err := copy(name, publicKey, "/root/.ssh/authorized_keys"); err != nil {
-			return err
-		}
+	// Initial provisioning.
+	if err := containerRunShell(name, initScript); err != nil {
+		return err
+	}
+	if err := copy(name, publicKey, "/root/.ssh/authorized_keys"); err != nil {
+		return err
 	}
 
 	return nil
@@ -375,11 +358,6 @@ func (c *Cluster) DeleteMachine(machine *Machine, i int) error {
 		return nil
 	}
 
-	if machine.IsIgnite() {
-		log.Infof("Deleting machine: %s ...", name)
-		return ignite.Remove(machine.name)
-	}
-
 	if machine.IsStarted() {
 		log.Infof("Machine %s is started, stopping and deleting machine...", name)
 		err := docker.Kill("KILL", name)
@@ -453,9 +431,6 @@ func (c *Cluster) gatherMachines() (machines []*Machine, err error) {
 		if !m.IsCreated() {
 			continue
 		}
-		if m.IsIgnite() {
-			continue
-		}
 
 		var inspect types.ContainerJSON
 		if err := docker.InspectObject(m.name, ".", &inspect); err != nil {
@@ -518,10 +493,6 @@ func (c *Cluster) startMachine(machine *Machine, i int) error {
 		return nil
 	}
 	log.Infof("Starting machine: %s ...", name)
-
-	if machine.IsIgnite() {
-		return ignite.Start(name)
-	}
 
 	// Run command while sigs.k8s.io/kind/pkg/container/docker doesn't
 	// have a start command
