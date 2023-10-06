@@ -3,7 +3,7 @@ SPDX-FileCopyrightText: 2019 Weaveworks Ltd.
 SPDX-FileCopyrightText: 2023 bootloose authors
 SPDX-License-Identifier: Apache-2.0
 -->
-[![Build status](https://github.com/k0sproject/bootloose/actions/workflows/go.yml)]
+[![Go](https://github.com/k0sproject/bootloose/actions/workflows/go.yaml/badge.svg)](https://github.com/k0sproject/bootloose/actions/workflows/go.yaml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/k0sproject/bootloose)](https://goreportcard.com/report/github.com/k0sproject/bootloose)
 [![GoDoc](https://godoc.org/github.com/k0sproject/bootloose?status.svg)](https://godoc.org/github.com/k0sproject/bootloose)
 
@@ -12,7 +12,7 @@ SPDX-License-Identifier: Apache-2.0
 `bootloose` creates containers that look like virtual machines. Those
 containers run `systemd` as PID 1 and a ssh daemon that can be used to login
 into the container. Such "machines" behave very much like a VM, it's even
-possible to run [`dockerd` in them][readme-did] :)
+possible to run [`dockerd` in them](./examples/docker-in-docker/).
 
 `bootloose` can be used for a variety of tasks, wherever you'd like virtual
 machines but want fast boot times or need many of them. An easy way to think
@@ -49,7 +49,7 @@ Build and install `bootloose` from source. It requires having
 `go >= 1.21` installed:
 
 ```console
-go install github.com/k0sproject/bootloose/...@latest
+go install github.com/k0sproject/bootloose@latest
 ```
 
 [gh-release]: https://github.com/k0sproject/bootloose/releases
