@@ -8,6 +8,8 @@ import (
 
 	"github.com/k0sproject/bootloose/cmd/bootloose"
 
+	_ "github.com/carlmjohnson/versioninfo" // Ensure version info is added to binary
+
 	log "github.com/sirupsen/logrus"
 )
 

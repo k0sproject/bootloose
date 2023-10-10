@@ -7,7 +7,6 @@ package bootloose
 import (
 	"fmt"
 
-	_ "github.com/carlmjohnson/versioninfo" // Needed to set version info during go install
 	"github.com/k0sproject/bootloose/version"
 
 	"github.com/spf13/cobra"

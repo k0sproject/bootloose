@@ -18,7 +18,7 @@ BIN_PREFIX := bootloose-
 all: bootloose
 
 bootloose:
-	go build -v $(BUILD_FLAGS) -o bootloose .
+	go build -v $(BUILD_FLAGS) -o bootloose main.go
 
 PLATFORMS := linux-amd64 linux-arm64 linux-arm darwin-amd64 darwin-arm64
 bins := $(foreach platform, $(PLATFORMS), bin/$(BIN_PREFIX)$(platform))
@@ -27,10 +27,10 @@ $(bins):
 	$(eval temp := $(subst -, ,$(subst $(BIN_PREFIX),,$(notdir $@))))
 	$(eval OS := $(word 1, $(subst -, ,$(temp))))
 	$(eval ARCH := $(word 2, $(subst -, ,$(temp))))
-	GOOS=$(OS) GOARCH=$(ARCH) CGO_ENABLED=0 go build $(BUILD_FLAGS) -o $@ .
+	GOOS=$(OS) GOARCH=$(ARCH) CGO_ENABLED=0 go build $(BUILD_FLAGS) -o $@ main.go
 
 bin/%: $(GO_SRCS)
-	GOOS=$(OS) GOARCH=$(ARCH) CGO_ENABLED=$(CGO_ENABLED) go build $(BUILD_FLAGS) -o $@ .
+	GOOS=$(OS) GOARCH=$(ARCH) CGO_ENABLED=$(CGO_ENABLED) go build $(BUILD_FLAGS) -o $@ main.go
 
 bin/sha256sums.txt: $(bins)
 	sha256sum -b $(bins) | sed 's|bin/||' > $@
