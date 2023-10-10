@@ -43,6 +43,14 @@ We are grateful for their work and contributions from the community.
 
 ## Install
 
+### Homebrew
+
+Install using [Homebrew](https://brew.sh/) package manager:
+
+```console
+brew install k0sproject/tap/bootloose
+```
+
 ### From source
 
 Build and install `bootloose` from source. It requires having
