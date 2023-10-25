@@ -285,6 +285,7 @@ func (c *Cluster) createMachineRunArgs(machine *Machine, name string, i int) []s
 	}
 	if docker.CgroupVersion() == "2" {
 		runArgs = append(runArgs, "--cgroupns", "host",
+			"--cgroup-parent", "bootloose.slice",
 			"-v", "/sys/fs/cgroup:/sys/fs/cgroup:rw")
 
 	} else {
