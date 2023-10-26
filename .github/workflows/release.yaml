@@ -7,7 +7,8 @@ on:
 
 jobs:
   prepare:
-    if: startsWith(github.ref, 'refs/tags/')
+    # do not publish binaries for tags containing a + (something like v0.7.2+go1.20 is intended for importing from go)
+    if: "startsWith(github.ref, 'refs/tags/') && !contains(github.ref, '+')"
     runs-on: ubuntu-20.04
     outputs:
       tag: ${{ steps.tag-name.outputs.tag }}
@@ -20,7 +21,8 @@ jobs:
       run: echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
     
   publish_binaries:
-    if: startsWith(github.ref, 'refs/tags/')
+    # do not publish binaries for tags containing a + (something like v0.7.2+go1.20 is intended for importing from go)
+    if: "startsWith(github.ref, 'refs/tags/') && !contains(github.ref, '+')"
     needs: prepare
     runs-on: ubuntu-20.04
     steps:
