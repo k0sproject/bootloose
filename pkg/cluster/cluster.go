@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
@@ -19,7 +20,6 @@ import (
 	"github.com/k0sproject/bootloose/pkg/config"
 	"github.com/k0sproject/bootloose/pkg/docker"
 	"github.com/k0sproject/bootloose/pkg/exec"
-	"github.com/mitchellh/go-homedir"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
@@ -163,7 +163,11 @@ func (c *Cluster) ensureSSHKey() error {
 	if c.spec.Cluster.PrivateKey == "" {
 		return nil
 	}
-	path, _ := homedir.Expand(c.spec.Cluster.PrivateKey)
+	path, err := expandHomedir(c.spec.Cluster.PrivateKey)
+	if err != nil {
+		return fmt.Errorf("failed to expand private key path: %w", err)
+	}
+
 	if _, err := os.Stat(path); err == nil {
 		return nil
 	}
@@ -204,9 +208,9 @@ func (c *Cluster) publicKey(machine *Machine) ([]byte, error) {
 		return nil, errors.New("no SSH key provided")
 	}
 
-	path, err := homedir.Expand(c.spec.Cluster.PrivateKey)
+	path, err := expandHomedir(c.spec.Cluster.PrivateKey)
 	if err != nil {
-		return nil, errors.Wrap(err, "public key expand")
+		return nil, fmt.Errorf("failed to expand private key path: %w", err)
 	}
 	return os.ReadFile(path + ".pub")
 }
@@ -638,7 +642,10 @@ func (c *Cluster) SSH(nodename string, username string, remoteArgs ...string) er
 	if mapping.Address != "" {
 		remote = mapping.Address
 	}
-	path, _ := homedir.Expand(c.spec.Cluster.PrivateKey)
+	path, err := expandHomedir(c.spec.Cluster.PrivateKey)
+	if err != nil {
+		return fmt.Errorf("failed to expand private key path: %w", err)
+	}
 	args := []string{
 		"-o", "UserKnownHostsFile=/dev/null",
 		"-o", "StrictHostKeyChecking=no",
@@ -677,4 +684,18 @@ func (c *Cluster) SSH(nodename string, username string, remoteArgs ...string) er
 			}
 		}
 	}
+}
+
+func expandHomedir(path string) (string, error) {
+	// Needs to be either `~` or `~/...` (or also `~\...` on Windows)
+	if path == "" || path[0] != '~' || (len(path) > 1 && !os.IsPathSeparator(path[1])) {
+		return path, nil
+	}
+
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return "", err
+	}
+
+	return filepath.Join(homeDir, path[1:]), nil
 }
