@@ -112,6 +112,7 @@ argument of `config create` can be used to configure the OS image. OS
 images provided by this repository are:
 
 - `quay.io/k0sproject/bootloose-alpine3.18`
+- `quay.io/k0sproject/bootloose-alpine3.19`
 - `quay.io/k0sproject/bootloose-amazonlinux2023`
 - `quay.io/k0sproject/bootloose-amazonlinux2`
 - `quay.io/k0sproject/bootloose-clearlinux`
