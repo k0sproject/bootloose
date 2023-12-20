@@ -5,10 +5,9 @@
 package cluster
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
-
-	"github.com/pkg/errors"
 )
 
 // KeyStore is a store for public keys.
@@ -46,11 +45,11 @@ func (s *KeyStore) keyExists(name string) bool {
 // Store adds the key to the store.
 func (s *KeyStore) Store(name, key string) error {
 	if s.keyExists(name) {
-		return errors.Errorf("key store: store: key '%s' already exists", name)
+		return fmt.Errorf("key store: store: key '%s' already exists", name)
 	}
 
 	if err := os.WriteFile(s.keyPath(name), []byte(key), 0644); err != nil {
-		return errors.Wrap(err, "key store: write")
+		return fmt.Errorf("key store: write: %w", err)
 	}
 
 	return nil
@@ -59,7 +58,7 @@ func (s *KeyStore) Store(name, key string) error {
 // Get retrieves a key from the store.
 func (s *KeyStore) Get(name string) ([]byte, error) {
 	if !s.keyExists(name) {
-		return nil, errors.Errorf("key store: get: unknown key '%s'", name)
+		return nil, fmt.Errorf("key store: get: unknown key '%s'", name)
 	}
 	return os.ReadFile(s.keyPath(name))
 }
@@ -67,10 +66,10 @@ func (s *KeyStore) Get(name string) ([]byte, error) {
 // Remove removes a key from the store.
 func (s *KeyStore) Remove(name string) error {
 	if !s.keyExists(name) {
-		return errors.Errorf("key store: remove: unknown key '%s'", name)
+		return fmt.Errorf("key store: remove: unknown key '%s'", name)
 	}
 	if err := os.Remove(s.keyPath(name)); err != nil {
-		return errors.Wrap(err, "key store: remove")
+		return fmt.Errorf("key store: remove: %w", err)
 	}
 	return nil
 }

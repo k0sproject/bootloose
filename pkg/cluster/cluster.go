@@ -6,6 +6,7 @@ package cluster
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -20,7 +21,6 @@ import (
 	"github.com/k0sproject/bootloose/pkg/config"
 	"github.com/k0sproject/bootloose/pkg/docker"
 	"github.com/k0sproject/bootloose/pkg/exec"
-	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
 

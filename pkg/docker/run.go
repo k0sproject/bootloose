@@ -20,10 +20,11 @@ package docker
 
 import (
 	"bytes"
+	"errors"
+	"fmt"
 	"regexp"
 	"strings"
 
-	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/k0sproject/bootloose/pkg/exec"
@@ -60,7 +61,7 @@ func Run(image string, runArgs []string, containerArgs []string) (id string, err
 		return "", errors.New("failed to get container id, received no output from docker run")
 	}
 	if !containerIDRegex.MatchString(outputLines[0]) {
-		return "", errors.Errorf("failed to get container id, output did not match: %v", outputLines)
+		return "", fmt.Errorf("failed to get container id, output did not match: %v", outputLines)
 	}
 	return outputLines[0], nil
 }

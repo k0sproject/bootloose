@@ -23,11 +23,10 @@ package docker
 import (
 	"archive/tar"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"os"
-
-	"github.com/pkg/errors"
 )
 
 // GetArchiveTags obtains a list of "repo:tag" docker image tags from a
