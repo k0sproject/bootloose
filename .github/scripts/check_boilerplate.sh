@@ -37,8 +37,11 @@ spdx_identifier="SPDX-License-Identifier: Apache-2.0"
 # is a new file 
 switch_timestamp=1693395563
 
-original_holder="Weaveworks Ltd."
-new_holder="bootloose authors"
+declare -r new_holder='bootloose authors'
+declare -ar original_holders=(
+  'Weaveworks Ltd.'
+  'The Kubernetes Authors.'
+)
 
 error_echo() {
   echo "$@" >&2
@@ -72,11 +75,17 @@ file_last_modified_year() {
 spdx_copyright_pattern() {
   local filename=$1
   local mode=$2
+  local holder
 
   case "$mode" in
-    old) 
-      year=$(file_introduction_year "$filename")
-      holder="$original_holder"
+    old)
+      if [ $# -gt 2 ] && [ "$3" != "${original_holders[0]}" ] ; then
+        year="[1-9][0-9][0-9][0-9]"
+        holder="$3"
+      else
+        year=$(file_introduction_year "$filename")
+        holder="${original_holders[0]}"
+      fi
       ;;
     new)
       year=$(file_last_modified_year "$filename")
@@ -86,17 +95,6 @@ spdx_copyright_pattern() {
   esac
 
   echo -n "SPDX-FileCopyrightText: ${year} ${holder}"
-}
-
-require_spdx_pattern() {
-  local filename=$1
-  local mode=$2
-
-  grep -q "$(spdx_copyright_pattern "$filename" "$mode")" "$filename" || {
-    error_echo "${filename}: Missing $mode SPDX license pattern"
-    return 1
-  }
-  return 0
 }
 
 require_spdx_identifier() {
@@ -110,11 +108,30 @@ require_spdx_identifier() {
 }
 
 require_spdx_pattern_old() {
-  require_spdx_pattern "$1" "old"
+  local filename=$1
+  local holder found=0
+
+  for holder in "${original_holders[@]}"; do
+    if grep -q "$(spdx_copyright_pattern "$filename" old "$holder")" "$filename"; then
+      found=1
+      break
+    fi
+  done
+
+  [ $found -eq 1 ] || {
+    error_echo "${filename}: Missing old SPDX license pattern"
+    return 1
+  }
 }
 
 require_spdx_pattern_new() {
-  require_spdx_pattern "$1" "new"
+  local filename=$1
+
+  grep -q "$(spdx_copyright_pattern "$filename" new)" "$filename" || {
+    error_echo "${filename}: Missing new SPDX license pattern"
+    return 1
+  }
+  return 0
 }
 
 # is_pre_existing returns true if the file was created before the switch
@@ -167,13 +184,17 @@ check_old_file() {
 
 check_new_file() {
   local filename=$1
+  local holder
 
   # Check that identifier and the new pattern are present
   if require_spdx_identifier "$filename" && require_spdx_pattern_new "$filename"; then
     # warn if an old pattern is present
-    if grep -i "spdx" "$filename" | grep -iq "${original_holder}"; then
-      error_echo "${filename}: Warning: a newly introduced file contains an old copyright"
-    fi
+    for holder in "${original_holders[@]}"; do
+      if grep -i "spdx" "$filename" | grep -iq "$holder"; then
+        error_echo "${filename}: Warning: a newly introduced file contains an old copyright"
+        break
+      fi
+    done
 
     return 0
   fi
