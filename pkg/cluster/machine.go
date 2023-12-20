@@ -12,7 +12,6 @@ import (
 	"github.com/docker/docker/api/types/network"
 	"github.com/k0sproject/bootloose/pkg/config"
 	"github.com/k0sproject/bootloose/pkg/docker"
-	"github.com/pkg/errors"
 )
 
 // Machine is a single machine.
@@ -64,11 +63,11 @@ func (m *Machine) IsStarted() bool {
 // HostPort returns the host port corresponding to the given container port.
 func (m *Machine) HostPort(containerPort int) (int, error) {
 	if !m.IsCreated() {
-		return -1, errors.Errorf("hostport: container %s is not created", m.name)
+		return -1, fmt.Errorf("hostport: container %s is not created", m.name)
 	}
 
 	if !m.IsStarted() {
-		return -1, errors.Errorf("hostport: container %s is not started", m.name)
+		return -1, fmt.Errorf("hostport: container %s is not started", m.name)
 	}
 
 	// Use the cached version first
@@ -81,15 +80,15 @@ func (m *Machine) HostPort(containerPort int) (int, error) {
 	// retrieve the specific port mapping using docker inspect
 	lines, err := docker.Inspect(m.ContainerName(), fmt.Sprintf("{{(index (index .NetworkSettings.Ports \"%d/tcp\") 0).HostPort}}", containerPort))
 	if err != nil {
-		return -1, errors.Wrapf(err, "hostport: failed to inspect container: %v", lines)
+		return -1, fmt.Errorf("hostport: failed to inspect container: %v: %w", lines, err)
 	}
 	if len(lines) != 1 {
-		return -1, errors.Errorf("hostport: should only be one line, got %d lines", len(lines))
+		return -1, fmt.Errorf("hostport: should only be one line, got %d lines", len(lines))
 	}
 
 	port := strings.Replace(lines[0], "'", "", -1)
 	if hostPort, err = strconv.Atoi(port); err != nil {
-		return -1, errors.Wrap(err, "hostport: failed to parse string to int")
+		return -1, fmt.Errorf("hostport: failed to parse string to int: %w", err)
 	}
 
 	if m.ports == nil {
