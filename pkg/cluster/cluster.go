@@ -6,6 +6,8 @@ package cluster
 
 import (
 	"context"
+	"crypto/ed25519"
+	"encoding/pem"
 	"errors"
 	"fmt"
 	"io"
@@ -22,6 +24,7 @@ import (
 	"github.com/k0sproject/bootloose/pkg/docker"
 	"github.com/k0sproject/bootloose/pkg/exec"
 	log "github.com/sirupsen/logrus"
+	"golang.org/x/crypto/ssh"
 )
 
 // Container represents a running machine.
@@ -172,15 +175,31 @@ func (c *Cluster) ensureSSHKey() error {
 		return nil
 	}
 
-	log.Infof("Creating SSH key: %s ...", path)
-	return run(
-		"ssh-keygen", "-q",
-		"-t", "rsa",
-		"-b", "4096",
-		"-C", f("%s@bootloose.mail", c.spec.Cluster.Name),
-		"-f", path,
-		"-N", "",
-	)
+	// Generate the Ed25519 private and public key pair
+	// and convert it into an SSH key pair.
+	pub, priv, err := ed25519.GenerateKey(nil)
+	if err != nil {
+		return fmt.Errorf("failed to generate new Ed25519 key: %w", err)
+	}
+	sshPub, err := ssh.NewPublicKey(pub)
+	if err != nil {
+		return fmt.Errorf("failed to convert Ed25519 public key into SSH public key: %w", err)
+	}
+	privPEM, err := ssh.MarshalPrivateKey(priv, "")
+	if err != nil {
+		return fmt.Errorf("failed to convert Ed25519 private key into PEM block: %w", err)
+	}
+	sshPubBytes, sshPrivBytes := ssh.MarshalAuthorizedKey(sshPub), pem.EncodeToMemory(privPEM)
+
+	// Save the key pair (unencrypted).
+	if err := os.WriteFile(path, sshPrivBytes, 0600); err != nil {
+		return fmt.Errorf("failed to save private key: %w", err)
+	}
+	if err := os.WriteFile(path+".pub", sshPubBytes, 0644); err != nil {
+		return fmt.Errorf("failed to save public key: %w", err)
+	}
+
+	return nil
 }
 
 const initScript = `
@@ -582,8 +601,8 @@ func (f *matchFilter) Write(p []byte) (n int, err error) {
 // ssh_exchange_identification: read: Connection reset by peer
 var connectRefused = regexp.MustCompile("(?m)(ssh|kex)_exchange_identification:.+?$")
 
-// ssh returns true if the command should be tried again.
-func ssh(args []string) (bool, error) {
+// execSSH returns true if the command should be tried again.
+func execSSH(args []string) (bool, error) {
 	cmd := exec.Command("ssh", args...)
 
 	refusedFilter := &matchFilter{
@@ -674,7 +693,7 @@ func (c *Cluster) SSH(nodename string, username string, remoteArgs ...string) er
 			}
 			return fmt.Errorf("ssh connection failed: %s: %w", ctx.Err(), lastErr)
 		case <-ticker.C:
-			retry, lastErr := ssh(args)
+			retry, lastErr := execSSH(args)
 			if lastErr == nil {
 				return nil
 			}

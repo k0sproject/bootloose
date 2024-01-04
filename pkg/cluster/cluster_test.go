@@ -6,6 +6,9 @@ package cluster
 
 import (
 	"io"
+	"io/fs"
+	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -72,4 +75,53 @@ func indexOf(element string, array []string) int {
 		}
 	}
 	return -1 // element not found.
+}
+
+func TestCluster_EnsureSSHKeys(t *testing.T) {
+	underTest := Cluster{}
+
+	t.Run("do_nothing_if_key_is_empty", func(t *testing.T) {
+		assert.NoError(t, underTest.ensureSSHKey())
+	})
+
+	tmpDir := t.TempDir()
+	keyPath := filepath.Join(tmpDir, "the-key")
+
+	var pubStat, privStat fs.FileInfo
+	created := t.Run("create_new_key", func(t *testing.T) {
+		underTest.spec.Cluster.PrivateKey = keyPath
+
+		err := underTest.ensureSSHKey()
+		assert.NoError(t, err)
+
+		privStat, err = os.Stat(keyPath)
+		if assert.NoError(t, err, "failed to stat private key file") {
+			assert.Equal(t, privStat.Mode().Perm(), os.FileMode(0600), "private key file has wrong permissions")
+
+		}
+
+		pubStat, err = os.Stat(keyPath + ".pub")
+		if assert.NoError(t, err, "failed to stat public key file") {
+			assert.Equal(t, pubStat.Mode().Perm(), os.FileMode(0644), "public key file has wrong permissions")
+		}
+	})
+
+	if !created {
+		return
+	}
+
+	t.Run("retains_existing_key", func(t *testing.T) {
+		err := underTest.ensureSSHKey()
+		assert.NoError(t, err)
+
+		newPrivStat, err := os.Stat(keyPath)
+		if assert.NoError(t, err, "failed to stat private key file") {
+			assert.Equal(t, privStat, newPrivStat, "private key has been tampered with")
+		}
+
+		newPubStat, err := os.Stat(keyPath + ".pub")
+		if assert.NoError(t, err, "failed to stat public key file") {
+			assert.Equal(t, pubStat, newPubStat, "public key has been tampered with")
+		}
+	})
 }
