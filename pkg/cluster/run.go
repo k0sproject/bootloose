@@ -14,19 +14,6 @@ import (
 	"github.com/k0sproject/bootloose/pkg/exec"
 )
 
-// run runs a command. It will output the combined stdout/error on failure.
-func run(name string, args ...string) error {
-	cmd := exec.Command(name, args...)
-	output, err := exec.CombinedOutputLines(cmd)
-	if err != nil {
-		// log error output if there was any
-		for _, line := range output {
-			log.Error(line)
-		}
-	}
-	return err
-}
-
 // Run a command in a container. It will output the combined stdout/error on failure.
 func containerRun(nameOrID string, name string, args ...string) error {
 	exe := docker.ContainerCmder(nameOrID)
