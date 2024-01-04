@@ -56,20 +56,20 @@ panic() {
   exit 1
 }
 
-year_from_rfc2822() {
-  echo "$1" | cut -d" " -f4
+file_introduction_date() {
+  git log --follow --diff-filter=A --author-date-order --format=%ad --date="${2-unix}" -- "$1" | tail -n1
 }
 
 file_introduction_year() {
-  local filename=$1
-
-  year_from_rfc2822 "$(git log --follow --pretty=format:%aD -- "$filename" | tail -n 1)"
+  file_introduction_date "$1" format:%Y
 }
 
-file_last_modified_year() {
-  local filename=$1
+file_first_modified_date() {
+  git log --follow --author-date-order --format=%ad --date="${2-unix}" --after=$switch_timestamp -- "$1" | tail -n1
+}
 
-  year_from_rfc2822 "$(git log --follow --pretty=format:%aD -- "$filename" | head -n 1)"
+file_first_modified_year() {
+  file_first_modified_date "$1" format:%Y
 }
 
 spdx_copyright_pattern() {
@@ -88,7 +88,7 @@ spdx_copyright_pattern() {
       fi
       ;;
     new)
-      year=$(file_last_modified_year "$filename")
+      year=$(file_first_modified_year "$filename")
       holder="$new_holder"
       ;;
     ?) panic "Invalid mode: $mode" ;;
@@ -137,12 +137,14 @@ require_spdx_pattern_new() {
 # is_pre_existing returns true if the file was created before the switch
 is_pre_existing() {
   local filename=$1
+  local since
 
-  file_timestamp=$(git log --follow --pretty=format:%at -- "$filename" | tail -n 1)
-  if [ "$file_timestamp" -lt "$switch_timestamp" ]; then
-    return 0  # true
+  since=$(file_introduction_date "$filename") || return 2
+  if [ "$since" -lt "$switch_timestamp" ]; then
+    return 0
+  else
+    return 1
   fi
-  return 1  # false
 }
 
 # is_modified_after_switch returns true if the file was modified after the switch
@@ -347,6 +349,7 @@ for filename in "${files[@]}"; do
     is_modified_after_switch "$filename" || continue
     mode="old"
   else
+    [ $? -eq 1 ]
     mode="new"
   fi
 
