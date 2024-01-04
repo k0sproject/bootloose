@@ -9,6 +9,9 @@ env:
   GITHUB_RUN_ID: ${{ github.run_id }}
   GITHUB_PR_NUMBER: ${{ github.event.pull_request.number }}
 
+permissions:
+  contents: read
+
 jobs:
   check:
     runs-on: ubuntu-20.04
@@ -16,6 +19,10 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        persist-credentials: false
+        show-progress: false
 
     - name: Check Copyright Boilerplate
       run: .github/scripts/check_boilerplate.sh
