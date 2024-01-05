@@ -1,6 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env sh
 # SPDX-FileCopyrightText: 2023 bootloose authors
 # SPDX-License-Identifier: Apache-2.0
+
+set -eu
 
 image_name="$1"
 
@@ -14,12 +16,13 @@ fi
 
 fetch_platforms() {
   image=$1
-  repo=$(echo $image | cut -d ':' -f 1)
-  tag=$(echo $image | cut -d ':' -f 2)
+  repo="${image%:*}"
+  tag="${image#*:}"
 
-  if [[ ! $repo =~ / ]]; then
-    repo="library/$repo"
-  fi
+  case "$repo" in
+  */*) ;; # repo name has a prefix already
+  *) repo="library/$repo" ;;
+  esac
 
   url="https://hub.docker.com/v2/repositories/$repo/tags/$tag/?page_size=20"
 
@@ -27,7 +30,6 @@ fetch_platforms() {
   curl -s "$url" \
     | jq -r '[.images[] | select(.os=="linux" and (.architecture | test("amd64|arm64|arm"))) | "\(.os)/\(.architecture)\(if .variant then "/" + .variant else "" end)"] | join(",")'
 }
-
 
 upstream_image=$(grep -m 1 'FROM' "${image_name}/Dockerfile" | cut -d ' ' -f2)
 fetch_platforms "$upstream_image"
