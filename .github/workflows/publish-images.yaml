@@ -38,6 +38,7 @@ jobs:
         id: list-images
         env:
           BEFORE: "${{ github.event.before }}"
+          GH_TOKEN: "${{ github.token }}"
         run: |
           if [ "$GITHUB_EVENT_NAME" = workflow_dispatch ] || [[ "$GITHUB_REF" = refs/tags/* ]]; then
             gh api /repos/{owner}/{repo}/git/trees/"${GITHUB_SHA}"?recursive=1 --paginate --jq '
