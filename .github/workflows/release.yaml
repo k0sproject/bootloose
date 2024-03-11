@@ -39,7 +39,7 @@ jobs:
         run: make build-all
 
       - name: Create release and upload binaries
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: |
             bin/bootloose-*
