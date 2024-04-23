@@ -67,6 +67,8 @@ type Machine struct {
 	Networks []string `json:"networks,omitempty"`
 	// PortMappings is the list of ports to expose to the host.
 	PortMappings []PortMapping `json:"portMappings,omitempty"`
+	// ExtraArgs is the list of extra arguments passed to docker
+	ExtraArgs []string `json:"extraArgs,omitempty"`
 	// Cmd is a cmd which will be run in the container.
 	Cmd string `json:"cmd,omitempty"`
 	// PublicKey is the name of the public key to upload onto the machine for root

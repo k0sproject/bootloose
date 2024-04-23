@@ -355,7 +355,7 @@ func (c *Cluster) createMachineRunArgs(machine *Machine, name string, i int) []s
 		}
 	}
 
-	return runArgs
+	return append(runArgs, machine.spec.ExtraArgs...)
 }
 
 // Create creates the cluster.
