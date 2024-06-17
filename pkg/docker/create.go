@@ -26,6 +26,8 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
+	goexec "os/exec"
+
 	"github.com/k0sproject/bootloose/pkg/exec"
 )
 
@@ -61,5 +63,27 @@ func Create(image string, runArgs []string, containerArgs []string) (id string, 
 	if !containerIDRegex.MatchString(outputLines[0]) {
 		return "", fmt.Errorf("failed to get container id, output did not match: %v", outputLines)
 	}
-	return outputLines[0], nil
+	containerID := outputLines[0]
+
+	// Check container status
+	statusCmd := goexec.Command("docker", "ps", "-a", "--filter", "id="+containerID, "--format", "{{.Status}}")
+	var statusOut bytes.Buffer
+	statusCmd.Stdout = &statusOut
+	if err := statusCmd.Run(); err != nil {
+		log.Printf("Error checking container status: %s", err)
+		return "", err
+	}
+	log.Printf("Container status: %s", statusOut.String())
+
+	// Capture container logs
+	logCmd := goexec.Command("docker", "logs", containerID)
+	var logOut bytes.Buffer
+	logCmd.Stdout = &logOut
+	if err := logCmd.Run(); err != nil {
+		log.Printf("Error capturing container logs: %s", err)
+		return "", err
+	}
+	log.Printf("Container logs: %s", logOut.String())
+
+	return containerID, nil
 }
