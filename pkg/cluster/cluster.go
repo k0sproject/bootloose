@@ -87,7 +87,7 @@ func (c *Cluster) Save(path string) error {
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(path, data, 0666)
+	return os.WriteFile(path, data, 0o666)
 }
 
 func f(format string, args ...interface{}) string {
@@ -193,10 +193,10 @@ func (c *Cluster) ensureSSHKey() error {
 	sshPubBytes, sshPrivBytes := ssh.MarshalAuthorizedKey(sshPub), pem.EncodeToMemory(privPEM)
 
 	// Save the key pair (unencrypted).
-	if err := os.WriteFile(path, sshPrivBytes, 0600); err != nil {
+	if err := os.WriteFile(path, sshPrivBytes, 0o600); err != nil {
 		return fmt.Errorf("failed to save private key: %w", err)
 	}
-	if err := os.WriteFile(path+".pub", sshPubBytes, 0644); err != nil {
+	if err := os.WriteFile(path+".pub", sshPubBytes, 0o644); err != nil {
 		return fmt.Errorf("failed to save public key: %w", err)
 	}
 
@@ -258,6 +258,7 @@ func (c *Cluster) CreateMachine(machine *Machine, i int) error {
 	}
 
 	runArgs := c.createMachineRunArgs(machine, name, i)
+	log.Infof("Create machine: image: %v runArgs: %+v cmd: %v", machine.spec.Image, runArgs, cmd)
 	_, err = docker.Create(machine.spec.Image,
 		runArgs,
 		[]string{cmd},
@@ -265,6 +266,7 @@ func (c *Cluster) CreateMachine(machine *Machine, i int) error {
 	if err != nil {
 		return err
 	}
+	log.Infof("done that")
 
 	if len(machine.spec.Networks) > 1 {
 		for _, network := range machine.spec.Networks[1:] {
@@ -281,6 +283,7 @@ func (c *Cluster) CreateMachine(machine *Machine, i int) error {
 		}
 	}
 
+	log.Infof("starting container %v", name)
 	if err := docker.Start(name); err != nil {
 		return err
 	}
