@@ -37,6 +37,7 @@ func Create(image string, runArgs []string, containerArgs []string) (id string, 
 	args = append(args, image)
 	args = append(args, containerArgs...)
 	cmd := exec.Command("docker", args...)
+	cmd.SetEnv("DOCKER_LOG_LEVEL=debug")
 	var stdout, stderr bytes.Buffer
 	cmd.SetStdout(&stdout)
 	cmd.SetStderr(&stderr)
