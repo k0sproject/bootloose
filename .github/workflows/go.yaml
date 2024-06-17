@@ -92,4 +92,21 @@ jobs:
       run: go test -timeout 5m -v ./pkg/...
 
     - name: Run tests (e2e)
-      run: go test -timeout 15m -v ./tests -args -image=${{ matrix.image }} || sudo journalctl -u docker --no-pager --since "1 hour ago"
+      continue-on-error: true
+      run: go test -timeout 15m -v ./tests -args -image=${{ matrix.image }}
+
+    - name: Collect Docker logs using journalctl
+      if: always()
+      run: |
+        sudo journalctl -u docker --no-pager --since "1 hour ago"
+
+    - name: Collect Docker container logs
+      if: always()
+      run: |
+        for container in $(docker ps -a -q); do
+          echo "Logs for container $container:"
+          docker logs $container || true
+        done
+        docker ps -a
+        docker images
+
