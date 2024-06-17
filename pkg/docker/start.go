@@ -32,11 +32,11 @@ func runWithLogging(cmd exec.Cmd) error {
 		}
 	}
 	return err
-
 }
 
 // Start starts a container.
 func Start(container string) error {
 	cmd := exec.Command("docker", "start", container)
+	cmd.SetEnv("DOCKER_LOG_LEVEL=debug")
 	return runWithLogging(cmd)
 }
