@@ -349,7 +349,7 @@ func (c *Cluster) createMachineRunArgs(machine *Machine, name string, i int) []s
 			// .slice. This is not a requirement for the cgroupfs driver; it
 			// won't care. Hence, just always use the .slice suffix, no matter
 			// if it's required or not.
-			const cgroupParent = "bootloose.slice"
+			const cgroupParent = "/actions_job/bootloose.slice"
 
 			cg := path.Join(
 				cgroupMountpoint, cgroupParent,
