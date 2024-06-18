@@ -393,9 +393,9 @@ func (c *Cluster) createMachineRunArgs(machine *Machine, name string, i int) []s
 		runArgs = append(runArgs, "-p", publish)
 	}
 
-	if machine.spec.Privileged {
-		runArgs = append(runArgs, "--privileged")
-	}
+	// if machine.spec.Privileged {
+	runArgs = append(runArgs, "--privileged")
+	// }
 
 	if len(machine.spec.Networks) > 0 {
 		network := machine.spec.Networks[0]
