@@ -306,8 +306,8 @@ func (c *Cluster) createMachineRunArgs(machine *Machine, name string, i int) []s
 		"--label", "io.k0sproject.bootloose.cluster=" + c.spec.Cluster.Name,
 		"--name", name,
 		"--hostname", machine.Hostname(),
-		"--tmpfs", "/run",
-		"--tmpfs", "/run/lock",
+		"--tmpfs", "/run:rw,size=100m,mode=755",
+		"--tmpfs", "/run/lock:rw,size=100m,mode=755",
 		"--tmpfs", "/tmp:exec,mode=777",
 	}
 	if docker.CgroupVersion() == "2" {
@@ -363,7 +363,7 @@ func (c *Cluster) createMachineRunArgs(machine *Machine, name string, i int) []s
 			)
 		}
 	} else {
-		runArgs = append(runArgs, "-v", "/sys/fs/cgroup:/sys/fs/cgroup:ro")
+		runArgs = append(runArgs, "-v", "/sys/fs/cgroup:/sys/fs/cgroup:ro", "--privileged")
 	}
 
 	for _, volume := range machine.spec.Volumes {
@@ -392,10 +392,6 @@ func (c *Cluster) createMachineRunArgs(machine *Machine, name string, i int) []s
 		}
 		runArgs = append(runArgs, "-p", publish)
 	}
-
-	// if machine.spec.Privileged {
-	runArgs = append(runArgs, "--privileged")
-	// }
 
 	if len(machine.spec.Networks) > 0 {
 		network := machine.spec.Networks[0]
