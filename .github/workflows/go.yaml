@@ -95,6 +95,12 @@ jobs:
       continue-on-error: true
       run: go test -timeout 15m -v ./tests -args -image=${{ matrix.image }}
 
+    - name: Inspect docker info
+      run: docker info --format '{{json .}}'
+
+    - name: Inspect daemon json file
+      run: cat /etc/docker/daemon.json
+
     - name: Collect Docker logs using journalctl
       if: always()
       run: |
