@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2019 Weaveworks Ltd.
+// SPDX-FileCopyrightText: 2024 bootloose authors
+// SPDX-License-Identifier: Apache-2.0
+
 package config
 
 import (
@@ -10,9 +14,9 @@ func TestGetValueFromConfig(t *testing.T) {
 	config := Config{
 		Cluster: Cluster{Name: "clustername", PrivateKey: "privatekey"},
 		Machines: []MachineReplicas{
-			MachineReplicas{
+			{
 				Count: 3,
-				Spec: Machine{
+				Spec: &Machine{
 					Image:      "myImage",
 					Name:       "myName",
 					Privileged: true,
@@ -32,7 +36,7 @@ func TestGetValueFromConfig(t *testing.T) {
 			"cluster.name",
 			Config{
 				Cluster:  Cluster{Name: "clustername", PrivateKey: "privatekey"},
-				Machines: []MachineReplicas{MachineReplicas{Count: 3, Spec: Machine{}}},
+				Machines: []MachineReplicas{{Count: 3, Spec: &Machine{}}},
 			},
 			"clustername",
 		},
@@ -40,7 +44,7 @@ func TestGetValueFromConfig(t *testing.T) {
 			"array path select global",
 			"machines[0].spec",
 			config,
-			Machine{
+			&Machine{
 				Image:      "myImage",
 				Name:       "myName",
 				Privileged: true,
