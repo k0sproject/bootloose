@@ -125,7 +125,7 @@ func (c *Cluster) forEachMachine(do func(*Machine, int) error) error {
 	for _, template := range c.spec.Machines {
 		for i := 0; i < template.Count; i++ {
 			// machine name indexed with i
-			machine := c.machine(&template.Spec, i)
+			machine := c.machine(template.Spec, i)
 			// but to prevent port collision, we use machineIndex for the real machine creation
 			if err := do(machine, machineIndex); err != nil {
 				return err
@@ -144,7 +144,7 @@ func (c *Cluster) forSpecificMachines(do func(*Machine, int) error, machineNames
 	}
 	for _, template := range c.spec.Machines {
 		for i := 0; i < template.Count; i++ {
-			machine := c.machine(&template.Spec, i)
+			machine := c.machine(template.Spec, i)
 			_, ok := machineToStart[machine.name]
 			if ok {
 				if err := do(machine, i); err != nil {
@@ -546,7 +546,7 @@ func (c *Cluster) gatherMachinesByCluster() (machines []*Machine) {
 	for _, template := range c.spec.Machines {
 		for i := 0; i < template.Count; i++ {
 			s := template.Spec
-			machine := c.machine(&s, i)
+			machine := c.machine(s, i)
 			machines = append(machines, machine)
 		}
 	}
@@ -673,7 +673,7 @@ func (c *Cluster) machineFromHostname(hostname string) (*Machine, error) {
 	for _, template := range c.spec.Machines {
 		for i := 0; i < template.Count; i++ {
 			if hostname == f(template.Spec.Name, i) {
-				return c.machine(&template.Spec, i), nil
+				return c.machine(template.Spec, i), nil
 			}
 		}
 	}

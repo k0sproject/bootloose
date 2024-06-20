@@ -30,8 +30,8 @@ func NewConfigFromFile(path string) (*Config, error) {
 
 // MachineReplicas are a number of machine following the same specification.
 type MachineReplicas struct {
-	Spec  Machine `json:"spec"`
-	Count int     `json:"count"`
+	Spec  *Machine `json:"spec"`
+	Count int      `json:"count"`
 }
 
 // Cluster is a set of Machines.
@@ -85,7 +85,7 @@ func DefaultConfig() Config {
 		Machines: []MachineReplicas{
 			{
 				Count: 1,
-				Spec: Machine{
+				Spec: &Machine{
 					Name:  "node%d",
 					Image: "quay.io/k0sproject/bootloose-ubuntu20.04",
 					PortMappings: []PortMapping{
