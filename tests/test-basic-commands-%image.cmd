@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Test that common utilities are present in the base images
 
-bootloose config create --config %testName.bootloose --override --name %testName --key %testName-key --image %image
+bootloose config create --config %testName.bootloose --override --name %testName --key %testName-key --image %image --volume /lib/modules:/lib/modules:ro
 %defer rm -f %testName.bootloose %testName-key %testName-key.pub
 %defer bootloose delete --config %testName.bootloose
 bootloose create --config %testName.bootloose
