@@ -5,6 +5,7 @@ on:
       - main
       - release-*
     paths:
+      - '.github/workflows/golangci-lint.yaml'
       - '**.go'
       - 'go.mod'
       - 'go.sum'
@@ -13,6 +14,7 @@ on:
       - main
       - release-*
     paths:
+      - '.github/workflows/golangci-lint.yaml'
       - '**.go'
       - 'go.mod'
       - 'go.sum'
