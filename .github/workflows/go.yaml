@@ -50,7 +50,31 @@ jobs:
     strategy:
       matrix: ${{fromJson(needs.prepare.outputs.matrix)}}
       fail-fast: false
+
+    # env:
+    #   DOCKER_VERSION: 24.0.9
+
     steps:
+    - name: Install Docker ${{ env.DOCKER_VERSION }}
+      if: env.DOCKER_VERSION != ''
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        arch=$(dpkg --print-architecture)
+        codename=$(. /etc/os-release && echo "$VERSION_CODENAME")
+        repo=https://download.docker.com/linux/ubuntu
+        keyfile=/etc/apt/keyrings/docker.asc
+        pkgver="5:$DOCKER_VERSION-1~ubuntu.20.04~$codename"
+
+        sudo install -m 0755 -d -- "${keyfile%/*}"
+        sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o "$keyfile"
+        sudo chmod 0644 -- "$keyfile"
+        printf 'deb [arch=%s signed-by=%s] %s %s stable\n' "$arch" "$keyfile" "$repo" "$codename" | sudo tee /etc/apt/sources.list.d/docker.list
+        sudo apt-get update
+        sudo apt-get install -y --allow-downgrades docker-ce="$pkgver" docker-ce-cli="$pkgver"
+        sudo systemctl restart docker
+        sudo docker --version
+
     - name: Checkout code
       uses: actions/checkout@v4
 
