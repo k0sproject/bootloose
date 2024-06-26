@@ -92,4 +92,9 @@ jobs:
       run: go test -timeout 5m -v ./pkg/...
 
     - name: Run tests (e2e)
+      id: e2e
       run: go test -timeout 15m -v ./tests -args -image=${{ matrix.image }}
+
+    - name: Docker logs after e2e failure
+      if: always() && steps.e2e.outcome == 'failure'
+      run: docker ps -a -f=label=io.k0sproject.bootloose.owner=bootloose --format "{{.ID}}" | xargs -n1 -r docker logs
