@@ -6,6 +6,7 @@ on:
       - main
       - release-*
     paths:
+      - '.github/workflows/go.yaml'
       - '**.go'
       - 'go.mod'
       - 'go.sum'
@@ -16,6 +17,7 @@ on:
       - main
       - release-*
     paths:
+      - '.github/workflows/go.yaml'
       - '**.go'
       - 'go.mod'
       - 'go.sum'
