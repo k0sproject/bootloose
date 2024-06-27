@@ -312,7 +312,7 @@ func (c *Cluster) createMachineRunArgs(machine *Machine, name string, i int) []s
 			"-v", "/sys/fs/cgroup:/sys/fs/cgroup:rw")
 
 	} else {
-		runArgs = append(runArgs, "-v", "/sys/fs/cgroup:/sys/fs/cgroup:ro")
+		runArgs = append(runArgs, "-v", "/sys/fs/cgroup:/sys/fs/cgroup")
 	}
 
 	for _, volume := range machine.spec.Volumes {
