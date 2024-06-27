@@ -55,13 +55,13 @@ machines:
 	assert.Equal(t, uint16(22), portMapping.ContainerPort)
 	assert.Equal(t, uint16(2222), portMapping.HostPort)
 
-	machine0 := cluster.machine(&template.Spec, 0)
+	machine0 := cluster.machine(template.Spec, 0)
 	args0 := cluster.createMachineRunArgs(machine0, machine0.ContainerName(), 0)
 	i := indexOf("-p", args0)
 	assert.NotEqual(t, -1, i)
 	assert.Equal(t, "2222:22", args0[i+1])
 
-	machine1 := cluster.machine(&template.Spec, 1)
+	machine1 := cluster.machine(template.Spec, 1)
 	args1 := cluster.createMachineRunArgs(machine1, machine1.ContainerName(), 1)
 	i = indexOf("-p", args1)
 	assert.NotEqual(t, -1, i)
@@ -96,13 +96,12 @@ func TestCluster_EnsureSSHKeys(t *testing.T) {
 
 		privStat, err = os.Stat(keyPath)
 		if assert.NoError(t, err, "failed to stat private key file") {
-			assert.Equal(t, privStat.Mode().Perm(), os.FileMode(0600), "private key file has wrong permissions")
-
+			assert.Equal(t, privStat.Mode().Perm(), os.FileMode(0o600), "private key file has wrong permissions")
 		}
 
 		pubStat, err = os.Stat(keyPath + ".pub")
 		if assert.NoError(t, err, "failed to stat public key file") {
-			assert.Equal(t, pubStat.Mode().Perm(), os.FileMode(0644), "public key file has wrong permissions")
+			assert.Equal(t, pubStat.Mode().Perm(), os.FileMode(0o644), "public key file has wrong permissions")
 		}
 	})
 
