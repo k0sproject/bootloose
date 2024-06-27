@@ -69,7 +69,7 @@ jobs:
         key: ${{ runner.os }}-buildx
 
     - name: Build ${{ inputs.image }}
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       with:
         platforms: ${{ steps.list-platforms.outputs.platforms }}
         push: true
