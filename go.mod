@@ -1,6 +1,8 @@
 module github.com/k0sproject/bootloose
 
-go 1.21.0
+go 1.22.0
+
+toolchain go1.22.4
 
 require (
 	github.com/carlmjohnson/versioninfo v0.22.5
