@@ -6,7 +6,7 @@ toolchain go1.22.4
 
 require (
 	github.com/carlmjohnson/versioninfo v0.22.5
-	github.com/docker/docker v27.1.2+incompatible
+	github.com/docker/docker v27.2.0+incompatible
 	github.com/ghodss/yaml v1.0.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.8.1
