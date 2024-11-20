@@ -2,8 +2,6 @@ module github.com/k0sproject/bootloose
 
 go 1.23
 
-toolchain go1.23.3
-
 require (
 	github.com/carlmjohnson/versioninfo v0.22.5
 	github.com/docker/docker v27.2.0+incompatible
