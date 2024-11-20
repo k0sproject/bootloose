@@ -67,7 +67,7 @@ func (conf Config) Validate() error {
 		err := machine.validate()
 		if err != nil {
 			valid = false
-			log.Fatalf(err.Error())
+			log.Fatal(err.Error())
 		}
 	}
 	if !valid {
