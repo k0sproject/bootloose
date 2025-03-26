@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path"
 	"path/filepath"
 	"regexp"
 	"strconv"
@@ -307,10 +308,57 @@ func (c *Cluster) createMachineRunArgs(machine *Machine, name string, i int) []s
 		"--tmpfs", "/tmp:exec,mode=777",
 	}
 	if docker.CgroupVersion() == "2" {
-		runArgs = append(runArgs, "--cgroupns", "host",
-			"--cgroup-parent", "bootloose.slice",
-			"-v", "/sys/fs/cgroup:/sys/fs/cgroup:rw")
+		runArgs = append(runArgs, "--cgroupns", "private")
 
+		if !machine.spec.Privileged {
+			// Non-privileged containers will have their /sys/fs/cgroup folder
+			// mounted read-only, even when running in private cgroup
+			// namespaces. This is a bummer for init systems. Containers could
+			// probably remount the cgroup fs in read-write mode, but that would
+			// require CAP_SYS_ADMIN _and_ a custom logic in the container's
+			// entry point. Podman has `--security-opt unmask=/sys/fs/cgroup`,
+			// but that's not a thing for Docker. The only other way to get a
+			// writable cgroup fs inside the container is to explicitly mount
+			// it. Some references:
+			//   - https://github.com/moby/moby/issues/42275
+			//   - https://serverfault.com/a/1054414
+
+			// Docker will use cgroups like
+			//   <cgroup-parent>/docker-{{ContainerID}}.scope.
+			//
+			// Ideally, we could mount those to /sys/fs/cgroup inside the
+			// containers. But there's some chicken-and-egg problem, as we only
+			// know the container ID _after_ the container creation. As a
+			// duct-tape solution, we mount our own cgroup as the root, which is
+			// unrelated to the Docker-managed one:
+			//   <cgroup-parent>/cluster-{{ClusterID}}.scope/machine-{{MachineID}}.scope
+
+			// FIXME: How to clean this up? Especially when Docker is being run
+			// on a different machine?
+
+			// Just assume that the cgroup fs is mounted at its default
+			// location. We could try to figure this out via
+			// /proc/self/mountinfo, but it's really not worth the hassle.
+			const cgroupMountpoint = "/sys/fs/cgroup"
+
+			// Use this as the parent cgroup for everything. Note that if Docker
+			// uses the systemd cgroup driver, the cgroup name has to end with
+			// .slice. This is not a requirement for the cgroupfs driver; it
+			// won't care. Hence, just always use the .slice suffix, no matter
+			// if it's required or not.
+			const cgroupParent = "bootloose.slice"
+
+			cg := path.Join(
+				cgroupMountpoint, cgroupParent,
+				fmt.Sprintf("cluster-%s.scope", c.spec.Cluster.Name),
+				fmt.Sprintf("machine-%s.scope", name),
+			)
+
+			runArgs = append(runArgs,
+				"--cgroup-parent", cgroupParent,
+				"-v", fmt.Sprintf("%s:%s:rw", cg, cgroupMountpoint),
+			)
+		}
 	} else {
 		runArgs = append(runArgs, "-v", "/sys/fs/cgroup:/sys/fs/cgroup")
 	}
