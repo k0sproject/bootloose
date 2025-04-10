@@ -18,7 +18,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/container"
 	"github.com/ghodss/yaml"
 	"github.com/k0sproject/bootloose/pkg/config"
 	"github.com/k0sproject/bootloose/pkg/docker"
@@ -86,7 +86,7 @@ func (c *Cluster) Save(path string) error {
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(path, data, 0666)
+	return os.WriteFile(path, data, 0o666)
 }
 
 func f(format string, args ...interface{}) string {
@@ -192,10 +192,10 @@ func (c *Cluster) ensureSSHKey() error {
 	sshPubBytes, sshPrivBytes := ssh.MarshalAuthorizedKey(sshPub), pem.EncodeToMemory(privPEM)
 
 	// Save the key pair (unencrypted).
-	if err := os.WriteFile(path, sshPrivBytes, 0600); err != nil {
+	if err := os.WriteFile(path, sshPrivBytes, 0o600); err != nil {
 		return fmt.Errorf("failed to save private key: %w", err)
 	}
-	if err := os.WriteFile(path+".pub", sshPubBytes, 0644); err != nil {
+	if err := os.WriteFile(path+".pub", sshPubBytes, 0o644); err != nil {
 		return fmt.Errorf("failed to save public key: %w", err)
 	}
 
@@ -310,7 +310,6 @@ func (c *Cluster) createMachineRunArgs(machine *Machine, name string, i int) []s
 		runArgs = append(runArgs, "--cgroupns", "host",
 			"--cgroup-parent", "bootloose.slice",
 			"-v", "/sys/fs/cgroup:/sys/fs/cgroup:rw")
-
 	} else {
 		runArgs = append(runArgs, "-v", "/sys/fs/cgroup:/sys/fs/cgroup")
 	}
@@ -456,7 +455,7 @@ func (c *Cluster) gatherMachines() (machines []*Machine, err error) {
 			continue
 		}
 
-		var inspect types.ContainerJSON
+		var inspect container.InspectResponse
 		if err := docker.InspectObject(m.name, ".", &inspect); err != nil {
 			return machines, err
 		}
