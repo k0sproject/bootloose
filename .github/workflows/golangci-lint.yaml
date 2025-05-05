@@ -38,7 +38,7 @@ jobs:
         run: go mod tidy -v && git diff --exit-code
 
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@v6
+        uses: golangci/golangci-lint-action@v8
         with:
           version: latest
           only-new-issues: false
