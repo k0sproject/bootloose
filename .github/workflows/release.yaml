@@ -8,7 +8,7 @@ on:
 jobs:
   prepare:
     if: startsWith(github.ref, 'refs/tags/')
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     outputs:
       tag: ${{ steps.tag-name.outputs.tag }}
     steps:
@@ -22,7 +22,7 @@ jobs:
   publish_binaries:
     if: startsWith(github.ref, 'refs/tags/')
     needs: prepare
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - name: Check out code
         uses: actions/checkout@v4
