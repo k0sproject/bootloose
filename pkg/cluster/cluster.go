@@ -18,8 +18,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/docker/docker/api/types/container"
 	"github.com/ghodss/yaml"
+	dockercontainer "github.com/k0sproject/bootloose/pkg/api/docker/container"
 	"github.com/k0sproject/bootloose/pkg/config"
 	"github.com/k0sproject/bootloose/pkg/docker"
 	"github.com/k0sproject/bootloose/pkg/exec"
@@ -455,7 +455,7 @@ func (c *Cluster) gatherMachines() (machines []*Machine, err error) {
 			continue
 		}
 
-		var inspect container.InspectResponse
+		var inspect dockercontainer.InspectResponse
 		if err := docker.InspectObject(m.name, ".", &inspect); err != nil {
 			return machines, err
 		}
@@ -478,7 +478,7 @@ func (c *Cluster) gatherMachines() (machines []*Machine, err error) {
 		var volumes []config.Volume
 		for _, mount := range inspect.Mounts {
 			v := config.Volume{
-				Type:        string(mount.Type),
+				Type:        mount.Type,
 				Source:      mount.Source,
 				Destination: mount.Destination,
 				ReadOnly:    mount.RW,

@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/docker/docker/api/types/network"
+	"github.com/k0sproject/bootloose/pkg/api/docker/network"
 	"github.com/k0sproject/bootloose/pkg/config"
 	"github.com/k0sproject/bootloose/pkg/docker"
 )

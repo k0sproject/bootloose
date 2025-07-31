@@ -1,9 +1,13 @@
+// SPDX-FileCopyrightText: 2019 Weaveworks Ltd.
+// SPDX-FileCopyrightText: 2025 bootloose authors
+// SPDX-License-Identifier: Apache-2.0
+
 package cluster
 
 import (
 	"testing"
 
-	"github.com/docker/docker/api/types/network"
+	"github.com/k0sproject/bootloose/pkg/api/docker/network"
 	"github.com/stretchr/testify/assert"
 )
 
