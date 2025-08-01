@@ -5,7 +5,7 @@
 package config
 
 import (
-	"fmt"
+	"errors"
 	"os"
 
 	log "github.com/sirupsen/logrus"
@@ -71,7 +71,7 @@ func (conf Config) Validate() error {
 		}
 	}
 	if !valid {
-		return fmt.Errorf("Configuration file non valid")
+		return errors.New("configuration file non valid")
 	}
 	return nil
 }

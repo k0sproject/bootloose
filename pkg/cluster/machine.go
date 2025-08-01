@@ -86,7 +86,7 @@ func (m *Machine) HostPort(containerPort int) (int, error) {
 		return -1, fmt.Errorf("hostport: should only be one line, got %d lines", len(lines))
 	}
 
-	port := strings.Replace(lines[0], "'", "", -1)
+	port := strings.ReplaceAll(lines[0], "'", "")
 	if hostPort, err = strconv.Atoi(port); err != nil {
 		return -1, fmt.Errorf("hostport: failed to parse string to int: %w", err)
 	}

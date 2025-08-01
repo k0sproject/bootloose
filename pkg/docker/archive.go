@@ -27,6 +27,8 @@ import (
 	"fmt"
 	"io"
 	"os"
+
+	log "github.com/sirupsen/logrus"
 )
 
 // GetArchiveTags obtains a list of "repo:tag" docker image tags from a
@@ -41,7 +43,11 @@ func GetArchiveTags(path string) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer f.Close()
+	defer func() {
+		if err := f.Close(); err != nil {
+			log.WithError(err).Errorf("failed to close archive file %s", path)
+		}
+	}()
 	tr := tar.NewReader(f)
 	var hdr *tar.Header
 	for {
