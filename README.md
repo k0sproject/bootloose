@@ -6,6 +6,7 @@ SPDX-License-Identifier: Apache-2.0
 [![Go](https://github.com/k0sproject/bootloose/actions/workflows/go.yaml/badge.svg)](https://github.com/k0sproject/bootloose/actions/workflows/go.yaml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/k0sproject/bootloose)](https://goreportcard.com/report/github.com/k0sproject/bootloose)
 [![GoDoc](https://godoc.org/github.com/k0sproject/bootloose?status.svg)](https://godoc.org/github.com/k0sproject/bootloose)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fk0sproject%2Fbootloose.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fk0sproject%2Fbootloose?ref=badge_shield)
 
 # bootloose
 
@@ -258,3 +259,7 @@ Conduct](https://github.com/cncf/foundation/blob/master/code-of-conduct.md).
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
 reported by contacting a bootloose project maintainer.
 
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fk0sproject%2Fbootloose.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fk0sproject%2Fbootloose?ref=badge_large)
