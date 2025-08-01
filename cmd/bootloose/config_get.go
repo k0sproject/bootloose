@@ -6,6 +6,7 @@ package bootloose
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"reflect"
@@ -32,7 +33,7 @@ func getConfig(cmd *cobra.Command, args []string) error {
 		detail, err = config.GetValueFromConfig(args[0], c)
 		if err != nil {
 			log.Println(err)
-			return fmt.Errorf("Failed to get config detail")
+			return errors.New("failed to get config detail")
 		}
 	} else {
 		detail = c
@@ -41,7 +42,7 @@ func getConfig(cmd *cobra.Command, args []string) error {
 		res, err := json.MarshalIndent(detail, "", "  ")
 		if err != nil {
 			log.Println(err)
-			return fmt.Errorf("Cannot convert result to json")
+			return errors.New("cannot convert result to json")
 		}
 		fmt.Printf("%s", res)
 	} else {

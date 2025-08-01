@@ -324,7 +324,9 @@ func (t *test) run(tt *testing.T) error {
 	if err != nil {
 		return fmt.Errorf("failed to open command file: %w", err)
 	}
-	defer f.Close()
+	defer func() {
+		assert.NoError(tt, f.Close(), "failed to close command file")
+	}()
 
 	scanner := bufio.NewScanner(f)
 	lineno := 0
