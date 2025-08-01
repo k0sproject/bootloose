@@ -7,7 +7,7 @@ package cluster
 import (
 	"net"
 
-	"github.com/docker/docker/api/types/network"
+	"github.com/k0sproject/bootloose/pkg/api/docker/network"
 )
 
 const (
