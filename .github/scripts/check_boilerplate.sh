@@ -2,7 +2,7 @@
 # SPDX-FileCopyrightText: 2023 bootloose authors
 # SPDX-License-Identifier: Apache-2.0
 
-set -euo pipefail
+set -xeuo pipefail
 
 # setup variable defaults s to avoid unbound variable errors
 GITHUB_REPOSITORY=${GITHUB_REPOSITORY:-"k0sproject/bootloose"}
@@ -57,7 +57,7 @@ panic() {
 }
 
 file_introduction_date() {
-  git log --follow --diff-filter=A --author-date-order --format=%ad --date="${2-unix}" -- "$1" | tail -n1
+  git log --diff-filter=A --author-date-order --format=%ad --date="${2-unix}" -- "$1" | tail -n1
 }
 
 file_introduction_year() {
@@ -65,7 +65,7 @@ file_introduction_year() {
 }
 
 file_first_modified_date() {
-  git log --follow --author-date-order --format=%ad --date="${2-unix}" --after=$switch_timestamp -- "$1" | tail -n1
+  git log --author-date-order --format=%ad --date="${2-unix}" --after=$switch_timestamp -- "$1" | tail -n1
 }
 
 file_first_modified_year() {
