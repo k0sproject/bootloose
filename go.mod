@@ -4,7 +4,7 @@ go 1.24.2
 
 require (
 	github.com/carlmjohnson/versioninfo v0.22.5
-	github.com/docker/go-connections v0.5.0
+	github.com/docker/go-connections v0.6.0
 	github.com/ghodss/yaml v1.0.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.9.1
