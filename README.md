@@ -112,18 +112,28 @@ $ bootloose ssh root@node1
 argument of `config create` can be used to configure the OS image. OS
 images provided by this repository are:
 
-- `quay.io/k0sproject/bootloose-alpine3.18`
 - `quay.io/k0sproject/bootloose-alpine3.19`
+- `quay.io/k0sproject/bootloose-alpine3.22`
 - `quay.io/k0sproject/bootloose-amazonlinux2023`
-- `quay.io/k0sproject/bootloose-amazonlinux2`
-- `quay.io/k0sproject/bootloose-clearlinux`
-- `quay.io/k0sproject/bootloose-debian10`
+- `quay.io/k0sproject/bootloose-clearlinux` 
 - `quay.io/k0sproject/bootloose-debian12`
-- `quay.io/k0sproject/bootloose-fedora38`
+- `quay.io/k0sproject/bootloose-fedora42`
 - `quay.io/k0sproject/bootloose-rockylinux9`
-- `quay.io/k0sproject/bootloose-ubuntu18.04`
-- `quay.io/k0sproject/bootloose-ubuntu20.04`
 - `quay.io/k0sproject/bootloose-ubuntu22.04`
+- `quay.io/k0sproject/bootloose-ubuntu24.04`
+
+#### Retired OS images
+
+These may still work but won't receive any more updates.
+
+- `quay.io/k0sproject/bootloose-alpine3.18` 
+- `quay.io/k0sproject/bootloose-amazonlinux2` 
+- `quay.io/k0sproject/bootloose-debian10` 
+- `quay.io/k0sproject/bootloose-fedora38` 
+- `quay.io/k0sproject/bootloose-ubuntu18.04` 
+- `quay.io/k0sproject/bootloose-ubuntu20.04`
+
+#### Image tags
 
 The tag `:latest` is updated when any of the images are changed in the repository.
 When bootloose CLI binary releases are published, images at that point are tagged
