@@ -488,6 +488,20 @@ func (c *Cluster) gatherMachines() (machines []*Machine, err error) {
 		m.spec.Volumes = volumes
 		m.spec.Cmd = strings.Join(inspect.Config.Cmd, ",")
 		m.ip = inspect.NetworkSettings.IPAddress
+		// Since Docker 29.x the IPAddress field is deprecated and will not be set at NetworkSettings level
+		// Instead we need to check the Networks map and pick first address we find
+		if m.ip == "" {
+			for _, netw := range inspect.NetworkSettings.Networks {
+				m.ip = netw.IPAddress
+				if m.ip != "" {
+					break
+				}
+			}
+		}
+		if m.ip == "" {
+			err = fmt.Errorf("unable to determine IP address for machine %s", m.name)
+			return
+		}
 		m.runtimeNetworks = NewRuntimeNetworks(inspect.NetworkSettings.Networks)
 
 	}
