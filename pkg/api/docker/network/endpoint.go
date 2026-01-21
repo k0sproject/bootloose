@@ -7,7 +7,8 @@ package network
 // https://github.com/moby/moby/blob/v28.3.3/api/types/network/endpoint.go#L12
 
 type EndpointSettings struct {
-	Gateway     string
-	IPAddress   string
-	IPPrefixLen int
+	Gateway           string
+	IPAddress         string
+	IPPrefixLen       int
+	GlobalIPv6Address string
 }
