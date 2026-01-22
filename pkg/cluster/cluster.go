@@ -496,6 +496,10 @@ func (c *Cluster) gatherMachines() (machines []*Machine, err error) {
 				if m.ip != "" {
 					break
 				}
+				m.ip = netw.GlobalIPv6Address
+				if m.ip != "" {
+					break
+				}
 			}
 		}
 		if m.ip == "" {
