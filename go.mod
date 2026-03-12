@@ -1,6 +1,6 @@
 module github.com/k0sproject/bootloose
 
-go 1.24.2
+go 1.25.0
 
 require (
 	github.com/carlmjohnson/versioninfo v0.22.5
@@ -10,7 +10,7 @@ require (
 	github.com/spf13/cobra v1.10.2
 	github.com/stretchr/testify v1.11.1
 	golang.org/x/crypto v0.48.0
-	golang.org/x/text v0.34.0
+	golang.org/x/text v0.35.0
 	gopkg.in/yaml.v2 v2.4.0
 )
 
