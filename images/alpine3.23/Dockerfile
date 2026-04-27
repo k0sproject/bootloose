@@ -1,6 +1,6 @@
 # SPDX-FileCopyrightText: 2026 bootloose authors
 # SPDX-License-Identifier: Apache-2.0
-FROM alpine:3.23.3
+FROM alpine:3.23.4
 
 RUN apk add --no-cache \
   alpine-base \
