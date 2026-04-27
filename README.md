@@ -112,8 +112,8 @@ $ bootloose ssh root@node1
 argument of `config create` can be used to configure the OS image. OS
 images provided by this repository are:
 
-- `quay.io/k0sproject/bootloose-alpine3.19`
 - `quay.io/k0sproject/bootloose-alpine3.22`
+- `quay.io/k0sproject/bootloose-alpine3.23`
 - `quay.io/k0sproject/bootloose-amazonlinux2023`
 - `quay.io/k0sproject/bootloose-debian12`
 - `quay.io/k0sproject/bootloose-fedora42`
@@ -126,6 +126,7 @@ images provided by this repository are:
 These may still work but won't receive any more updates.
 
 - `quay.io/k0sproject/bootloose-alpine3.18` 
+- `quay.io/k0sproject/bootloose-alpine3.19`
 - `quay.io/k0sproject/bootloose-amazonlinux2` 
 - `quay.io/k0sproject/bootloose-debian10` 
 - `quay.io/k0sproject/bootloose-fedora38` 
