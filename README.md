@@ -81,7 +81,7 @@ Start the cluster:
 
 ```console
 $ bootloose create
-INFO[0000] Pulling image: quay.io/k0sproject/bootloose-debian12 ...
+INFO[0000] Pulling image: quay.io/k0sproject/bootloose-debian13 ...
 INFO[0007] Creating machine: cluster-node0 ...
 INFO[0008] Creating machine: cluster-node1 ...
 INFO[0008] Creating machine: cluster-node2 ...
@@ -116,6 +116,7 @@ images provided by this repository are:
 - `quay.io/k0sproject/bootloose-alpine3.23`
 - `quay.io/k0sproject/bootloose-amazonlinux2023`
 - `quay.io/k0sproject/bootloose-debian12`
+- `quay.io/k0sproject/bootloose-debian13`
 - `quay.io/k0sproject/bootloose-fedora42`
 - `quay.io/k0sproject/bootloose-rockylinux9`
 - `quay.io/k0sproject/bootloose-ubuntu22.04`
@@ -143,11 +144,11 @@ with a version that you can pin a config to, such as
 For example:
 
 ```console
-bootloose config create --replicas 3 --image quay.io/k0sproject/bootloose-debian12
+bootloose config create --replicas 3 --image quay.io/k0sproject/bootloose-debian13
 ```
 
 ```console
-bootloose config create --replicas 3 --image quay.io/k0sproject/bootloose-debian12:v0.7.0
+bootloose config create --replicas 3 --image quay.io/k0sproject/bootloose-debian13:v0.9.6
 ```
 
 Some images may need the `--privileged` flag.
@@ -168,7 +169,7 @@ cluster:
 machines:
 - count: 3
   spec:
-    image: quay.io/k0sproject/bootloose-debian12
+    image: quay.io/k0sproject/bootloose-debian13
     name: node%d
     portMappings:
     - containerPort: 22
@@ -200,9 +201,9 @@ inspected with `docker`:
 ```console
 $ docker ps
 CONTAINER ID    IMAGE                                  COMMAND         NAMES
-04c27967f76e    quay.io/k0sproject/bootloose-debian12  "/sbin/init"    cluster-node2
-1665288855f6    quay.io/k0sproject/bootloose-debian12  "/sbin/init"    cluster-node1
-5134f80b733e    quay.io/k0sproject/bootloose-debian12  "/sbin/init"    cluster-node0
+04c27967f76e    quay.io/k0sproject/bootloose-debian13  "/sbin/init"    cluster-node2
+1665288855f6    quay.io/k0sproject/bootloose-debian13  "/sbin/init"    cluster-node1
+5134f80b733e    quay.io/k0sproject/bootloose-debian13  "/sbin/init"    cluster-node0
 ```
 
 The container names are derived from `cluster.name` and
