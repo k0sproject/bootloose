@@ -1,6 +1,6 @@
-# SPDX-FileCopyrightText: 2023 bootloose authors
+# SPDX-FileCopyrightText: 2026 bootloose authors
 # SPDX-License-Identifier: Apache-2.0
-FROM alpine:3.19.0
+FROM alpine:3.23.3
 
 RUN apk add --no-cache \
   alpine-base \
@@ -23,3 +23,4 @@ RUN apk add --no-cache \
 
 # Start a shell if no command is given, otherwise exec the command verbatim.
 ENTRYPOINT ["/bin/sh", "-c", "[ $# -gt 0 ] || set -- /bin/sh; exec \"$@\"", "--"]
+
