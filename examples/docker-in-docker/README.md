@@ -9,7 +9,7 @@ To run `dockerd` inside a docker container, two things are needed:
 
 - Run the container as privileged (we could probably do better! expose
 capabilities instead).
-- Mount `/var/lib/docker` as volume, here an anonymous volume. This is
+- Mount `/var/lib/containerd` as volume, here an anonymous volume. This is
 because of [limitations][dind] of what you can do with the overlay system
 docker is setup to use.
 
@@ -20,14 +20,14 @@ cluster:
 machines:
 - count: 1
   spec:
-    image: quay.io/k0sproject/bootloose-debian12
+    image: quay.io/k0sproject/bootloose-ubuntu24.04
     name: node%d
     portMappings:
     - containerPort: 22
     privileged: true
     volumes:
     - type: volume
-      destination: /var/lib/docker
+      destination: /var/lib/containerd
 ```
 
 You can then install and run docker on the machine:
@@ -35,7 +35,7 @@ You can then install and run docker on the machine:
 ```console
 $ bootloose create
 $ bootloose ssh root@node0
-# yum install -y docker iptables
+# apt update && apt install -y docker.io
 [...]
 # systemctl start docker
 # docker run busybox echo 'Hello, World!'
