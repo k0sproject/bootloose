@@ -3,12 +3,13 @@ SPDX-FileCopyrightText: 2019 Weaveworks Ltd.
 SPDX-FileCopyrightText: 2023 bootloose authors
 SPDX-License-Identifier: Apache-2.0
 -->
+
+# bootloose
+
 [![Go](https://github.com/k0sproject/bootloose/actions/workflows/go.yaml/badge.svg)](https://github.com/k0sproject/bootloose/actions/workflows/go.yaml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/k0sproject/bootloose)](https://goreportcard.com/report/github.com/k0sproject/bootloose)
 [![GoDoc](https://godoc.org/github.com/k0sproject/bootloose?status.svg)](https://godoc.org/github.com/k0sproject/bootloose)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fk0sproject%2Fbootloose.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fk0sproject%2Fbootloose?ref=badge_shield)
-
-# bootloose
 
 `bootloose` creates containers that look like virtual machines. Those
 containers run `systemd` as PID 1 and a ssh daemon that can be used to login
@@ -60,8 +61,6 @@ Build and install `bootloose` from source. It requires having
 ```console
 go install github.com/k0sproject/bootloose@latest
 ```
-
-[gh-release]: https://github.com/k0sproject/bootloose/releases
 
 ## Usage
 
@@ -121,20 +120,21 @@ images provided by this repository are:
 - `quay.io/k0sproject/bootloose-rockylinux9`
 - `quay.io/k0sproject/bootloose-ubuntu22.04`
 - `quay.io/k0sproject/bootloose-ubuntu24.04`
+- `quay.io/k0sproject/bootloose-ubuntu26.04`
 
-#### Retired OS images
+### Retired OS images
 
 These may still work but won't receive any more updates.
 
-- `quay.io/k0sproject/bootloose-alpine3.18` 
+- `quay.io/k0sproject/bootloose-alpine3.18`
 - `quay.io/k0sproject/bootloose-alpine3.19`
-- `quay.io/k0sproject/bootloose-amazonlinux2` 
-- `quay.io/k0sproject/bootloose-debian10` 
-- `quay.io/k0sproject/bootloose-fedora38` 
-- `quay.io/k0sproject/bootloose-ubuntu18.04` 
+- `quay.io/k0sproject/bootloose-amazonlinux2`
+- `quay.io/k0sproject/bootloose-debian10`
+- `quay.io/k0sproject/bootloose-fedora38`
+- `quay.io/k0sproject/bootloose-ubuntu18.04`
 - `quay.io/k0sproject/bootloose-ubuntu20.04`
 
-#### Image tags
+### Image tags
 
 The tag `:latest` is updated when any of the images are changed in the repository.
 When bootloose CLI binary releases are published, images at that point are tagged
@@ -174,7 +174,6 @@ machines:
     portMappings:
     - containerPort: 22
 ```
-
 
 This configuration can naturally be edited by hand. The full list of
 available parameters are in [the reference documentation][pkg-config].
@@ -252,6 +251,7 @@ Failed to install release agent, ignoring: File exists
 ## FAQ
 
 ### Is `bootloose` just like LXD?
+
 In principle yes, but it will also work with Docker container images and
 on MacOS as well.
 
@@ -270,7 +270,6 @@ Conduct](https://github.com/cncf/foundation/blob/master/code-of-conduct.md).
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
 reported by contacting a bootloose project maintainer.
 
-
-
 ## License
+
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fk0sproject%2Fbootloose.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fk0sproject%2Fbootloose?ref=badge_large)
