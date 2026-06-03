@@ -19,7 +19,7 @@ on:
 
 jobs:
   prepare:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-slim
     outputs:
       tag: ${{ steps.set-tag.outputs.tag }}
       images: ${{ steps.list-images.outputs.images }}
