@@ -25,7 +25,7 @@ func GetValueFromConfig(stringPath string, object interface{}) (interface{}, err
 	caser := cases.Title(language.English)
 	for _, key := range keyPath {
 		keyTitle := caser.String(key)
-		for v.Kind() == reflect.Ptr {
+		for v.Kind() == reflect.Pointer {
 			v = v.Elem()
 		}
 		if v.Kind() == reflect.Struct {
