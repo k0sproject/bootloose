@@ -34,7 +34,7 @@ func containerRunShell(nameOrID string, script string) error {
 
 func copy(nameOrID string, content []byte, path string) error {
 	buf := bytes.Buffer{}
-	buf.WriteString(fmt.Sprintf("cat <<__EOF | tee -a %s\n", path))
+	fmt.Fprintf(&buf, "cat <<__EOF | tee -a %s\n", path)
 	buf.Write(content)
 	buf.WriteString("__EOF")
 	return containerRunShell(nameOrID, buf.String())
